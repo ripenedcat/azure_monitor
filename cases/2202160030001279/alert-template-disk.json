@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "alertName": {
+            "defaultValue": "your-disk-alert-name",
+            "type": "String"
+        },
+        "workspace_resource_id": {
+            "defaultValue": "/subscriptions/6f5f8fcf-a825-455a-8b79-3562e43c6748/resourcegroups/lucasrg3/providers/microsoft.operationalinsights/workspaces/lucaslaw3",
+            "type": "String"
+        },
+		"workspace_region": {
+            "defaultValue": "eastus",
+            "type": "String"
+        },
+        "action_group_resource_id": {
+            "defaultValue": "/subscriptions/6f5f8fcf-a825-455a-8b79-3562e43c6748/resourceGroups/BotRG/providers/microsoft.insights/actiongroups/LucasAGEmail",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/metricalerts",
+            "apiVersion": "2018-03-01",
+            "name": "[parameters('alertName')]",
+            "location": "global",
+            "properties": {
+                "severity": 0,
+                "enabled": true,
+                "scopes": [
+                    "[parameters('workspace_resource_id')]"
+                ],
+                "evaluationFrequency": "PT5M",
+                "windowSize": "PT5M",
+                "criteria": {
+                    "allOf": [
+                        {
+                            "threshold": 10,
+                            "name": "Metric1",
+                            "metricNamespace": "Microsoft.OperationalInsights/workspaces",
+                            "metricName": "Average_% Free Space",
+                            "dimensions": [
+                                {
+                                    "name": "Computer",
+                                    "operator": "Include",
+                                    "values": [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "name": "InstanceName",
+                                    "operator": "Include",
+                                    "values": [
+                                        "*"
+                                    ]
+                                }
+                            ],
+                            "operator": "LessThanOrEqual",
+                            "timeAggregation": "Average",
+                            "criterionType": "StaticThresholdCriterion"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                },
+                "autoMitigate": true,
+                "targetResourceType": "Microsoft.OperationalInsights/workspaces",
+                "targetResourceRegion": "[parameters('workspace_region')]",
+                "actions": [
+                    {
+                        "actionGroupId": "[parameters('action_group_resource_id')]",
+                        "webHookProperties": {}
+                    }
+                ]
+            }
+        }
+    ]
+}
