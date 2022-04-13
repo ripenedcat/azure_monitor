@@ -105,3 +105,5 @@ if ($currentCapacityPercentage -ge $MaxUserSessionsThreshold*100){
     Invoke-RestMethod -Method 'Post' -Uri $url -Body ($body|ConvertTo-Json) -ContentType "application/json"
 	Write-Output "Triggered Logic App to send an alert email"
 }
+Write-Output "Finished"
+
