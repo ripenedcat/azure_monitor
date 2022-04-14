@@ -1,8 +1,10 @@
+#paramters from Logic App webhook
 param (
 	[Parameter(mandatory = $false)]
 	$WebHookData
 )
-
+# ===Section of parse data from webhook===
+#========================================
 # Setting ErrorActionPreference to stop script execution when error occurs
 $ErrorActionPreference = 'Stop'
 # Note: this is to force cast in case it's not of the desired type. Specifying this type inside before the param inside param () doesn't work because it still accepts other types and doesn't cast it to this type
@@ -51,13 +53,13 @@ if ($InvalidParams) {
 [string]$HostPoolName = $RqtParams.HostPoolName
 [double]$MaxUserSessionsThreshold = $RqtParams.MaxUserSessionsThreshold
 
-#$ResourceGroupName = "TinaSub_WVD"
-#$HostPoolName = "NewPool"
+#=======End of Section===============
 
+# =====Section of Login to Azure========
 # Ensures you do not inherit an AzContext in your runbook
 Disable-AzContextAutosave -Scope Process
     
-#region azure auth, ctx
+
 #Collect the credentials from Azure Automation Account Assets
 $ConnectionAsset = Get-AutomationConnection -Name "AzureRunAsConnection"
 
@@ -75,26 +77,31 @@ catch {
 }
 Write-Output "Successfully authenticated with Azure using service principal: $($AzContext | Format-List -Force | Out-String)"
 
+#=======End of Section===========
+
+#====Get AVD MaxSessionLimit for each VM. e.g. 4 session allowed for 1 VM
 $MaxSessionLimit = (Get-AzWvdHostPool -Name $HostPoolName -ResourceGroupName $ResourceGroupName).MaxSessionLimit
 # Personal Account has a default session limit as 1
 if ($MaxSessionLimit -ge 9999){
 	$MaxSessionLimit=1
 }
+# Get Session Hosts number
 $SessionHosts = @(Get-AzWvdSessionHost -ResourceGroupName $ResourceGroupName -HostPoolName $HostPoolName)
 $nSessionHosts = $SessionHosts.Count
+# Get current user session number
 [int]$nUserSessions = @(Get-AzWvdUserSession -ResourceGroupName $ResourceGroupName -HostPoolName $HostPoolName).Count
 
-#[double]$MaxUserSessionsThreshold = 0.9
-[int]$MaxUserSessionsThresholdCapacity = [math]::Floor($nSessionHosts * $MaxSessionLimit * $MaxUserSessionsThreshold)
-
+# currentCapacityPercentage = 100% * current user session number / maximum sessions allowed.
 $currentCapacityPercentage = [math]::Floor(100 * $nUserSessions/($nSessionHosts * $MaxSessionLimit) )
 Write-Output "nUserSessions = $nUserSessions "
 Write-Output "nSessionHosts = $nSessionHosts "
 Write-Output "MaxSessionLimit = $MaxSessionLimit "
 Write-Output "currentCapacityPercentage = $currentCapacityPercentage "
 
+# if the curent capacity exceeds the specified threshold
 if ($currentCapacityPercentage -ge $MaxUserSessionsThreshold*100){
 	Write-Output "currentCapacityPercentage=$currentCapacityPercentage is great than the MaxUserSessionsThreshold $MaxUserSessionsThreshold * 100%"
+	#Logic App webhook URL
 	$url = "https://prod-16.northcentralus.logic.azure.com:443/workflows/978a0277533a4d9eb77058e345f470f5/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qvCtVpKWJPY-3zHpexQlVSa0GBjKHpHzst-FpylV_rA"
     $body = @{
         nUserSessions= $nUserSessions
