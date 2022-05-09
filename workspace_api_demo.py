@@ -16,7 +16,7 @@ cmd = "systemctl status "+ service_name
 result = execCmd(cmd)
 print(result)
 
-pattern = "Active: ([a-z)( ]+) since"
+pattern = "Active: ([A-Za-z0-9 )(:-]+) since"
 status = re.findall(pattern,result)[0]
 print(f'status = {status}')
 
