@@ -30,8 +30,9 @@ name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu
 pd.set_option('display.max_columns', None)
 # 显示所有行
 pd.set_option('display.max_rows', None)
-
+new_week_off_dict={}
 def get_markdown4excel():
+    global new_week_off_dict
     print_hi('Script is running, please wait until finish')
     new_week_off_dict = get_week_off()
     df_excel = get_excel_data()
