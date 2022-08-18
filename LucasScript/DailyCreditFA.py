@@ -32,6 +32,11 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 def get_markdown4excel():
+    print_hi('Script is running, please wait until finish')
+    new_week_off_dict = get_week_off()
+    df_excel = get_excel_data()
+    print(df_excel)
+
     check_name(df_excel)
     df_fte = get_se_data(df_excel, monitoring_fte)
     print(df_fte)
@@ -160,10 +165,6 @@ def concat_and_sort(df_fte, df_vendor):
     return df_fte
 
 
-print_hi('Script is running, please wait until finish')
-new_week_off_dict = get_week_off()
-df_excel = get_excel_data()
-print(df_excel)
 
 
 def check_name(df_excel):
