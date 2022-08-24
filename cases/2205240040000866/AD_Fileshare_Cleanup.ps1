@@ -49,7 +49,7 @@ Write-Output ""
 # concat fileshare folder name per disabled user's sid and account name
 foreach($disabledUser in $disabledUsersList){
 	#concat azure file share name
-	$fileShareFolderNames += @($disabledUser.SID).Value+ "_"+ $disabledUser.SamAccountName + "_lucas"
+	$fileShareFolderNames += $disabledUser.SamAccountName + "_"+  @($disabledUser.SID).Value
 }
 
 Write-Output "Starting to delete fileshare per disabled user SID & Account Name"
@@ -78,12 +78,18 @@ Write-Output "Within the provided OU(s), there are $($disabledUsersList.count) d
 Write-Output ""	
 if([String]::IsNullOrEmpty($finalProcessedInfomation)){
 	Write-Output "No Fileshare was successfully deleted."
+	$finalProcessedInfomation = "No Fileshare was successfully deleted."
 }else{
 	Write-Output "Fileshare successfully deleted:"
 	Write-Output "$finalProcessedInfomation"
 }
+$url = ""
+$body = @{
+	finalProcessedInfomation= $finalProcessedInfomation
+}
+Invoke-RestMethod -Method 'Post' -Uri $url -Body ($body|ConvertTo-Json) -ContentType "application/json"
+Write-Output "Triggered Logic App to send an email"
 
 
 Write-Output ""
 Write-Output "Script finished"
-
