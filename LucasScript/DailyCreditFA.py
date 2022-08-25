@@ -6,10 +6,46 @@
 import pandas as pd
 import time
 import datetime
-import json,requests,openpyxl
+import xlwings,json,requests,openpyxl
 from io import BytesIO
-import tabulate
 
+
+#################Parameters######################
+try:
+    summary_excel
+except:
+    summary_excel = 'summary.xlsx'
+    print(f"path of summary_excel not set. Using defalut {summary_excel}")
+#################################################
+
+
+gl_fw=45
+off_days = {
+    'Andy':           0,
+    'Anna':           0,
+    'Arthur':         0,
+    "Bruno":          0,
+    "Edwin":          0,
+    "Hugh":           0,
+    "Jack":           0,
+    "Jeremy":         0,
+    "Jerome":         0,
+    "Jiaqi":          1,
+    "Junsen":         0,
+    "Kelly":          0,
+    "Li":             0,
+    "Mark":           1,
+    "Niki":           1,
+    "Nina":           0,
+    "Qi":             1,
+    "Qianqian":       0,
+    "Sophia":         0,
+    "Wan":            1,
+    "Wuhao":          1,
+    "Xuanyi":         1,
+    "Lucas":          0
+}
+all_excel = r'C:\Users\lucashuang.FAREAST\OneDrive - Microsoft\Desktop\FY21_CaseAssignment.xlsx'
 
 
 
@@ -18,6 +54,11 @@ monitoring_fte = [ 'Anna', "Sophia","Hugh",
                  "Niki", "Nina",  "Qianqian", "Wuhao","Howard","Jimmy",'Arthur',"Lucas","Jingjing","Chunyan"]
 monitoring_vendor = [ "Victor",  "Aristo",
                  "Jack", "Jerome", "Jiaqi", "Wan","Allen","Tony","Adelaide","Cici","Jack Zhou","Alen","Ivan"]
+
+monitoring_tw = ['Jeff','Cheryl',"Tina"]
+monitoring_au = ['Chris','Nicky']
+
+
 
 name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu":"Andy","Kelly Zhou":"Kelly","Qi Chen":"Qi",
               "Wuhao Chen":"Wuhao","Qianqian Liu":"Qianqian","Junsen Chen":"Junsen","Mark He":"Mark","Hugh Chao":"Hugh",
@@ -30,24 +71,7 @@ name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu
 pd.set_option('display.max_columns', None)
 # 显示所有行
 pd.set_option('display.max_rows', None)
-new_week_off_dict={}
-local_debug = False
-downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
-def get_markdown4excel():
-    global new_week_off_dict
-    print_hi('Script is running, please wait until finish')
-    new_week_off_dict = get_week_off()
-    df_excel = get_excel_data()
-    print(df_excel)
-
-    check_name(df_excel)
-    df_fte = get_se_data(df_excel, monitoring_fte)
-    print(df_fte)
-    df_vendor = get_se_data(df_excel, monitoring_vendor)
-    print(df_vendor)
-    df_all = concat_and_sort(df_fte, df_vendor)
-    return df_all.to_markdown(stralign="center",numalign="center")
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -68,19 +92,28 @@ def get_week_off():
 # Press the green button in the gutter to run the script.
 def get_excel_data():
 
-
-    # 读取工作簿和工作簿中的工作表
-    response = requests.get('https://prod-00.eastus.logic.azure.com:443/workflows/764229174611433581f584080a1c15c1/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CekobRDm-H9Dx-tBTpXOblRXrJqihxBoTeCyilDCi2w')
-    excel_response = requests.get("https://lucasstorageaccount.blob.core.windows.net/token/Monitoring Today's Cases and Credit This Week.xlsx")
-    excel_response = excel_response.content
-    with open(downloaded_excel_path,'wb') as f:
-        f.write(excel_response)
-    df = pd.read_excel(downloaded_excel_path,
-                       sheet_name='Case this week',engine='openpyxl')
-    # 新建一个工作簿
-    df = df.dropna(axis=0, how='all')
-    #df = df.dropna(axis=1, how='all')
-    return df
+    method =0
+    if method:
+        # 读取工作簿和工作簿中的工作表
+        df = pd.read_excel(all_excel,
+                           sheet_name='Azure Monitoring',engine='openpyxl')
+        # 新建一个工作簿
+        df = df.dropna(axis=1, how='all')
+        df = df.loc[df['FW'] == gl_fw]
+        return df
+    else:
+        # 读取工作簿和工作簿中的工作表
+        response = requests.get('https://prod-00.eastus.logic.azure.com:443/workflows/764229174611433581f584080a1c15c1/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CekobRDm-H9Dx-tBTpXOblRXrJqihxBoTeCyilDCi2w')
+        excel_response = requests.get("https://lucasstorageaccount.blob.core.windows.net/token/Monitoring Today's Cases and Credit This Week.xlsx")
+        excel_response = excel_response.content
+        with open("./Monitoring Today's Cases and Credit This Week.xlsx",'wb') as f:
+            f.write(excel_response)
+        df = pd.read_excel(r"./Monitoring Today's Cases and Credit This Week.xlsx",
+                           sheet_name='Case this week',engine='openpyxl')
+        # 新建一个工作簿
+        df = df.dropna(axis=0, how='all')
+        #df = df.dropna(axis=1, how='all')
+        return df
 
 
 def get_se_data(df_excel,monitoring_se):
@@ -155,27 +188,56 @@ def get_se_data(df_excel,monitoring_se):
 
 
 
-def concat_and_sort(df_fte, df_vendor):
-    df_fte=pd.concat([df_fte,df_vendor])
-    sum_case_today = df_fte["case today"].sum()
-    sum_task_today = df_fte["task today"].sum()
-    sum_active_case_this_week = df_fte["active case this week"].sum()
-    sum_active_task_this_week = df_fte["active task this week"].sum()
-    df_fte.loc["Total"] = ""
-    df_fte.loc["Total", "case today"] = sum_case_today
-    df_fte.loc["Total", "task today"] = sum_task_today
-    df_fte.loc["Total", "active case this week"] = sum_active_case_this_week
-    df_fte.loc["Total", "active task this week"] = sum_active_task_this_week
-    return df_fte
 
 
+def output_excel(df_all):
+    print("===output excel====")
+    today = str(datetime.date.today().month) + "." + str(datetime.date.today().day)
+    print("today =",today)
+    wb = xlwings.Book(summary_excel)
+    try:
+        sht = wb.sheets.add(name=today, before=None, after=None)
+    except:
+        sht = wb.sheets[today]
+        sht.clear()
+    sht.range("A1").value = df_all
+    wb.save()
+
+
+def concat_and_sort(*iterables):
+    df_all=pd.concat(iterables)
+    sum_case_today = df_all["case today"].sum()
+    sum_task_today = df_all["task today"].sum()
+    sum_active_case_this_week = df_all["active case this week"].sum()
+    sum_active_task_this_week = df_all["active task this week"].sum()
+    df_all.loc["Total"] = ""
+    df_all.loc["Total", "case today"] = sum_case_today
+    df_all.loc["Total", "task today"] = sum_task_today
+    df_all.loc["Total", "active case this week"] = sum_active_case_this_week
+    df_all.loc["Total", "active task this week"] = sum_active_task_this_week
+    return df_all
 
 
 def check_name(df_excel):
     pass
 
-if __name__=="__main__":
-    print(get_markdown4excel())
 
+print_hi('Script is running, please wait until finish')
+new_week_off_dict = get_week_off()
+df_excel = get_excel_data()
+print(df_excel)
+check_name(df_excel)
+
+
+df_fte = get_se_data(df_excel,monitoring_fte)
+print(df_fte)
+df_vendor = get_se_data(df_excel,monitoring_vendor)
+print(df_vendor)
+df_tw = get_se_data(df_excel,monitoring_tw)
+print(df_tw)
+df_au = get_se_data(df_excel,monitoring_au)
+print(df_au)
+df_all = concat_and_sort(df_fte,df_tw,df_au ,df_vendor)
+output_excel(df_all)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
