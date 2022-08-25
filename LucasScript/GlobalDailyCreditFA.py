@@ -6,8 +6,47 @@
 import pandas as pd
 import time
 import datetime
-import json,requests,openpyxl
+import xlwings,json,requests,openpyxl
 from io import BytesIO
+
+
+#################Parameters######################
+try:
+    summary_excel
+except:
+    summary_excel = r'C:\Users\lucashuang.FAREAST\OneDrive - Microsoft\Desktop\summary.xlsx'
+    print(f"path of summary_excel not set. Using defalut {summary_excel}")
+#################################################
+
+
+gl_fw=45
+off_days = {
+    'Andy':           0,
+    'Anna':           0,
+    'Arthur':         0,
+    "Bruno":          0,
+    "Edwin":          0,
+    "Hugh":           0,
+    "Jack":           0,
+    "Jeremy":         0,
+    "Jerome":         0,
+    "Jiaqi":          1,
+    "Junsen":         0,
+    "Kelly":          0,
+    "Li":             0,
+    "Mark":           1,
+    "Niki":           1,
+    "Nina":           0,
+    "Qi":             1,
+    "Qianqian":       0,
+    "Sophia":         0,
+    "Wan":            1,
+    "Wuhao":          1,
+    "Xuanyi":         1,
+    "Lucas":          0
+}
+all_excel = r'C:\Users\lucashuang.FAREAST\OneDrive - Microsoft\Desktop\FY21_CaseAssignment.xlsx'
+
 
 
 NAME=0
@@ -31,20 +70,7 @@ today = time.strftime("%Y-%m-%d", d)
 print("today:",today)
 print("weekday_shift = ",weekday_shift)
 
-local_debug = False
-downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
-
-
-def get_markdown4excel():
-    print_hi('Script is running, please wait until finish')
-    df_excel = get_excel_data()
-    # print(df_excel.info)
-    # print(df_excel)
-    df_fte = get_se_data(df_excel, name_role_mapping.keys())
-    print(df_fte)
-
-    df_all = concat_and_sort(df_fte)
-    return df_all.to_markdown(stralign="center",numalign="center")
+#today = "2022-05-10"
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -58,21 +84,21 @@ def get_excel_data():
     response = requests.get('https://prod-00.eastus.logic.azure.com:443/workflows/764229174611433581f584080a1c15c1/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CekobRDm-H9Dx-tBTpXOblRXrJqihxBoTeCyilDCi2w')
     excel_response = requests.get("https://lucasstorageaccount.blob.core.windows.net/token/Monitoring Today's Cases and Credit This Week.xlsx")
     excel_response = excel_response.content
-    with open(downloaded_excel_path,'wb') as f:
+    with open("./Monitoring Today's Cases and Credit This Week.xlsx",'wb') as f:
         f.write(excel_response)
-    df = pd.read_excel(downloaded_excel_path,
+    df = pd.read_excel(r"./Monitoring Today's Cases and Credit This Week.xlsx",
                        sheet_name='Case this week', engine='openpyxl')
-    df_au = pd.read_excel(downloaded_excel_path,
-                          sheet_name='AU Case Assignment', engine='openpyxl')
+    # df_au = pd.read_excel(r"./Monitoring Today's Cases and Credit This Week.xlsx",
+    #                       sheet_name='AU Case Assignment', engine='openpyxl')
     #df_tw = pd.read_excel(r"./Monitoring Today's Cases and Credit This Week.xlsx",
     #                      sheet_name='TW Case Assignment', engine='openpyxl')
     # 新建一个工作簿
     df = df.dropna(axis=0, how='all')
-    df_au = df_au.dropna(axis=0, how='all')
+    # df_au = df_au.dropna(axis=0, how='all')
     #df_tw = df_tw.dropna(axis=0, how='all')
 
     # df = df.dropna(axis=1, how='all')
-    return pd.concat([df, df_au])
+    return df
 
 
 def get_se_data(df_excel,monitoring_se):
@@ -172,6 +198,14 @@ def concat_and_sort(df_fte):
     return df_fte
 
 
+print_hi('Script is running, please wait until finish')
+df_excel = get_excel_data()
+#print(df_excel.info)
+#print(df_excel)
+df_fte = get_se_data(df_excel,name_role_mapping.keys())
+print(df_fte)
 
+df_all = concat_and_sort(df_fte)
+output_excel(df_all)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
