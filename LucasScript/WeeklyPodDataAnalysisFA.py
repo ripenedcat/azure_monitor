@@ -105,7 +105,9 @@ total_dict = defaultdict(int)
 
 local_debug = False
 downloaded_excel_path = "./CaseAssignment.xlsx" if local_debug else '/tmp/a.xlsx'
-
+import os
+if os.path.exists(downloaded_excel_path):
+    os.remove(downloaded_excel_path)
 # 显示所有行
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
