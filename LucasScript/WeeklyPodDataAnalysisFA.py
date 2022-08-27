@@ -145,8 +145,8 @@ def analyzeReport(json1):
             elif "Case"== record[QueryforAllSEOpeningCases_jsonMapper.CaseType.value - 1]:
                 case_dict[record[QueryforAllSEOpeningCases_jsonMapper.AgentId.value - 1].split("@")[0].lower()] += 1
     #临时修一下Adelaide的bug case
-    if case_dict["Adelaide"]-36 >0:
-        case_dict["Adelaide"]-=36
+    if case_dict["v-lingjiewu"]-36 >0:
+        case_dict["v-lingjiewu"]-=36
     for k,v in name_alias_mapping.items():
         total_dict[v] = case_dict[v]+task_dict[v]
 
@@ -250,7 +250,7 @@ def get_excel_data(fw):
     ret_general.loc[0, "S500 Case Volume"] = temp_df_monitoring_s500_case_this_week.shape[0]
 
 
-    ret_general.loc[1, "S500 Case Volume"] = 0
+
 
 
 
@@ -293,8 +293,8 @@ def get_excel_data(fw):
     ret_general.loc[0, "Weekly Total"] = ret_general.loc[0, "Case Volume"] + ret_general.loc[0, "Collaboration Task Volume"] \
                                         +ret_general.loc[0, "Follow-up Task Volume"]+ret_general.loc[0, "Rave AR"]
 
-    ret_general.loc[1, "Weekly Total"] = ret_general.loc[1, "Case Volume"] + ret_general.loc[1, "Collaboration Task Volume"] \
-                                         + ret_general.loc[1, "Follow-up Task Volume"] + ret_general.loc[1, "Rave AR"]
+    # ret_general.loc[1, "Weekly Total"] = ret_general.loc[1, "Case Volume"] + ret_general.loc[1, "Collaboration Task Volume"] \
+    #                                      + ret_general.loc[1, "Follow-up Task Volume"] + ret_general.loc[1, "Rave AR"]
 
     for se in all_se:
         print(" ------------- ",se,'-----------------')
