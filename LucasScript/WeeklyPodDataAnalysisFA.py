@@ -103,6 +103,9 @@ case_dict = defaultdict(int)
 task_dict = defaultdict(int)
 total_dict = defaultdict(int)
 
+local_debug = False
+downloaded_excel_path = "./CaseAssignment.xlsx" if local_debug else '/tmp/a.xlsx'
+
 # 显示所有行
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -190,9 +193,9 @@ def get_excel_data(fw):
     excel_response = requests.get(
         "https://lucasstorageaccount.blob.core.windows.net/token/CaseAssignment.xlsx")
     excel_response = excel_response.content
-    with open("./CaseAssignment.xlsx", 'wb') as f:
+    with open(downloaded_excel_path, 'wb') as f:
         f.write(excel_response)
-    case_excel = "./CaseAssignment.xlsx"
+    case_excel = downloaded_excel_path
     df_monitoring_case = pd.read_excel(case_excel,sheet_name='Azure Monitoring',engine='openpyxl')
     df_monitoring_case = df_monitoring_case.dropna(axis=1, how='all')
     df_monitoring_case = df_monitoring_case.loc[df_monitoring_case['FW'] == fw]
