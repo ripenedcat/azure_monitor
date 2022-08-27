@@ -13,7 +13,7 @@ from datetime import date, datetime, timedelta
 import tabulate
 #################Parameters######################
 try:
-    gl_fw=8
+    gl_fw
 except:
     #gl_fw=7
     # 计算fiscal week
@@ -224,8 +224,10 @@ def get_excel_data(fw):
                                         "Collaboration Task Volume","Escalation Task Volume","Follow-up Task Volume",
                                         "Rave AR","Weekly Total","Engineers Backlog (No Rave)","Engineers Backlog Case Volume",
                                         "Engineers Backlog Task Volume"])
+    ret_general.loc[0,"PoD Name"]="Monitoring"
     ret_general.loc[:, :] = 0
     ret_general.loc[0,"PoD Name"]="Monitoring"
+
     #ret_general.loc[1,"PoD Name"]="Integration"
     #general crisit case volumn
     temp_df_monitoring_crisit_case_this_week = df_monitoring_case[df_monitoring_case['Case/Task'].str.lower().str.contains("case")]
