@@ -90,7 +90,7 @@ name_alias_mapping = { 'Arthur':"arthurhuang", 'Anna':"xuegao",   "Junsen":"juns
                        "Qianqian":"liqianqi",  "Wuhao":"wuhchen","Hugh":"huichao","Sophia":"yiqianzhang","Howard":"howardpei","Jimmy":"bianji","Lucas":"lucashuang",
                        "Jason":"shengzhou","Wenru":"v-wenruhuang","Jingjing":"jingjingcai","Chunyan":"chunyanliu" ,
 
-                        "Jeff":"leejeff","Tina":"tins","Cheryl":"yuhua",
+                        "Jeff":"leejeff","Tina":"tins","Cheryl":"yahua",
 
                         "Chris":"cbutrymowicz", "Nicky":"nickylian",
 
