@@ -21,11 +21,11 @@ monitoring_vendor = [ "Victor",  "Aristo",
 
 name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu":"Andy","Kelly Zhou":"Kelly","Qi Chen":"Qi",
               "Wuhao Chen":"Wuhao","Qianqian Liu":"Qianqian","Junsen Chen":"Junsen","Mark He":"Mark","Hugh Chao":"Hugh",
-               "Sophia Zhang":"Sophia","Hao Pei":"Howard","Ji Bian":"Jimmy","Niki Jin":"Niki","Wan Huang":"Wan","Li Zhang":"Li",
+               "Sophia Zhang":"Sophia","Howard Pei":"Howard","Ji Bian":"Jimmy","Niki Jin":"Niki","Wan Huang":"Wan","Li Zhang":"Li",
               "Yue Mei":"Edwin","Jeremy Liang":"Jeremy","Jack Bian":"Jack","Jiaqi Deng":"Jiaqi","Arthur Huang":"Arthur",
-              "Junhao Guan":"Jerome","Lucas Huang":"Lucas","Xuanyi Liu":"Xuanyi","Chener Zhang":"Chener","Aristo Liao":"Aristo",
+              "Jerome Guan":"Jerome","Lucas Huang":"Lucas","Xuanyi Liu":"Xuanyi","Chener Zhang":"Chener","Aristo Liao":"Aristo",
               "Victor Zhang":"Victor","Guangyu Zhang":"Victor","Tony Li":"Tony","Allen Liang":"Allen","Jason Zhou":"Jason","Adelaide Wu":"Adelaide","Xichen Xue":"Cici","Jack Zhou":"Jack Zhou",
-              "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan":"Ivan Tong","Jingjing":"Jingjing Cai","Chunyan":"Chunyan Liu"}
+              "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan Tong":"Ivan","Jingjing Cai":"Jingjing","Chunyan Liu":"Chunyan"}
 
 pd.set_option('display.max_columns', None)
 # 显示所有行
@@ -33,6 +33,12 @@ pd.set_option('display.max_rows', None)
 new_week_off_dict={}
 local_debug = False
 downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
+
+def get_json_result():
+    data = get_markdown4excel()
+    success = True
+    message = f'This is daily credit for {time.strftime("%Y-%m-%d", time.localtime())}.'
+    return json.dumps({"data":data,"success":success,"message":message})
 
 def get_markdown4excel():
     global new_week_off_dict
