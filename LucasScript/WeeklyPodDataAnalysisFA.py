@@ -112,6 +112,12 @@ if os.path.exists(downloaded_excel_path):
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
+def get_json_result():
+    data = get_markdown4excel()
+    success = True
+    message = f'This is weekly credit for FW{gl_fw}.'
+    return json.dumps({"data":data,"success":success,"message":message})
+
 def get_markdown4excel():
     print_hi('Script is running, please wait until finish')
     df_general,df_all = get_excel_data(gl_fw)
