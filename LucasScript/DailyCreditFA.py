@@ -31,7 +31,7 @@ pd.set_option('display.max_columns', None)
 # 显示所有行
 pd.set_option('display.max_rows', None)
 new_week_off_dict={}
-local_debug = False
+local_debug = True
 downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
 def get_json_result():
@@ -110,38 +110,38 @@ def get_se_data(df_excel,monitoring_se):
         if se in new_week_off_dict.keys():
             ret.loc[se, "workdays"] -= new_week_off_dict[se]
         # case this week
-        temp_df_case_this_week = df_excel[df_excel['Case/Task'].str.contains("Case")]
+        temp_df_case_this_week = df_excel[df_excel['Case/Task'].astype(str).str.contains("Case")]
         temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case owner"].str.strip() == se]
         ret.loc[se, "active case this week"] = temp_df_case_this_week.shape[0]
         # task this week
-        temp_df_task_this_week = df_excel[df_excel['Case/Task'].str.contains("Task")]
-        temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case owner"].str.strip() == se]
+        temp_df_task_this_week = df_excel[df_excel['Case/Task'].astype(str).str.contains("Task")]
+        temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case owner"].astype(str).str.strip() == se]
         ret.loc[se, "active task this week"] = temp_df_task_this_week.shape[0]
         # case today
         # temp_df_case_today = df_excel[df_excel['Case/Task'].str.contains("Case")]
         # temp_df_case_today = temp_df_case_today[temp_df_case_today["Weekday Shift"] == weekday_shift]
         # temp_df_case_today = temp_df_case_today[temp_df_case_today["Case owner"] == se]
-        temp_df_case_today = df_excel[df_excel['Case/Task'].str.contains("Case")]
+        temp_df_case_today = df_excel[df_excel['Case/Task'].astype(str).str.contains("Case")]
         temp_df_case_today = temp_df_case_today[temp_df_case_today["Date"] == today]
-        temp_df_case_today = temp_df_case_today[temp_df_case_today["Case owner"].str.strip() == se]
+        temp_df_case_today = temp_df_case_today[temp_df_case_today["Case owner"].astype(str).str.strip() == se]
         ret.loc[se, "case today"] = temp_df_case_today.shape[0]
         # task today
         # temp_df_task_today = df_excel[df_excel['Case/Task'].str.contains("Task")]
         # temp_df_task_today = temp_df_task_today[temp_df_task_today["Weekday Shift"] == weekday_shift]
         # temp_df_task_today = temp_df_task_today[temp_df_task_today["Case owner"] == se]
-        temp_df_task_today = df_excel[df_excel['Case/Task'].str.contains("Task")]
+        temp_df_task_today = df_excel[df_excel['Case/Task'].astype(str).str.contains("Task")]
         temp_df_task_today = temp_df_task_today[temp_df_task_today["Date"] == today]
-        temp_df_task_today = temp_df_task_today[temp_df_task_today["Case owner"].str.strip() == se]
+        temp_df_task_today = temp_df_task_today[temp_df_task_today["Case owner"].astype(str).str.strip() == se]
         ret.loc[se, "task today"] = temp_df_task_today.shape[0]
         # transfer out case
         temp_df_transfer_out_case = df_excel[df_excel['Case/Task'].str.contains("Case")]
-        temp_df_transfer_out_case = temp_df_transfer_out_case[temp_df_transfer_out_case["Case owner"].str.strip() == se]
-        temp_df_transfer_out_case = temp_df_transfer_out_case[temp_df_transfer_out_case["Transfer Out?"].str.lower().str.contains("y",na=False)]
+        temp_df_transfer_out_case = temp_df_transfer_out_case[temp_df_transfer_out_case["Case owner"].astype(str).str.strip() == se]
+        temp_df_transfer_out_case = temp_df_transfer_out_case[temp_df_transfer_out_case["Transfer Out?"].astype(str).str.lower().str.contains("y",na=False)]
         ret.loc[se, "transferred out case"] = temp_df_transfer_out_case.shape[0]
         ##transfer out task
         temp_df_transfer_out_task = df_excel[df_excel['Case/Task'].str.contains("Task")]
-        temp_df_transfer_out_task = temp_df_transfer_out_task[temp_df_transfer_out_task["Case owner"].str.strip() == se]
-        temp_df_transfer_out_task = temp_df_transfer_out_task[temp_df_transfer_out_task["Transfer Out?"].str.lower().str.contains("y",na=False)]
+        temp_df_transfer_out_task = temp_df_transfer_out_task[temp_df_transfer_out_task["Case owner"].astype(str).str.strip() == se]
+        temp_df_transfer_out_task = temp_df_transfer_out_task[temp_df_transfer_out_task["Transfer Out?"].astype(str).str.lower().str.contains("y",na=False)]
         ret.loc[se, "transferred out task"] = temp_df_transfer_out_task.shape[0]
         # minus transfer out
         ret.loc[se, "active case this week"] -= ret.loc[se, "transferred out case"]
