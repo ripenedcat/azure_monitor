@@ -19,6 +19,9 @@ monitoring_fte = [ 'Anna', "Sophia","Hugh",
 monitoring_vendor = [ "Victor",  "Aristo",
                  "Jack", "Jerome", "Jiaqi", "Wan","Allen","Tony","Adelaide","Cici","Jack Zhou","Alen","Ivan"]
 
+monitoring_tw = ['Jeff','Cheryl',"Tina"]
+monitoring_au = ['Chris','Nicky']
+
 name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu":"Andy","Kelly Zhou":"Kelly","Qi Chen":"Qi",
               "Wuhao Chen":"Wuhao","Qianqian Liu":"Qianqian","Junsen Chen":"Junsen","Mark He":"Mark","Hugh Chao":"Hugh",
                "Sophia Zhang":"Sophia","Howard Pei":"Howard","Ji Bian":"Jimmy","Niki Jin":"Niki","Wan Huang":"Wan","Li Zhang":"Li",
@@ -31,7 +34,7 @@ pd.set_option('display.max_columns', None)
 # 显示所有行
 pd.set_option('display.max_rows', None)
 new_week_off_dict={}
-local_debug = False
+local_debug = True
 downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
 def get_json_result():
@@ -52,7 +55,11 @@ def get_markdown4excel():
     print(df_fte)
     df_vendor = get_se_data(df_excel, monitoring_vendor)
     print(df_vendor)
-    df_all = concat_and_sort(df_fte, df_vendor)
+    df_tw = get_se_data(df_excel, monitoring_tw)
+    print(df_tw)
+    df_au = get_se_data(df_excel, monitoring_au)
+    print(df_au)
+    df_all = concat_and_sort(df_fte,df_tw,df_au ,df_vendor)
     return df_all.to_markdown(stralign="center",numalign="center")
 
 def print_hi(name):
@@ -161,19 +168,18 @@ def get_se_data(df_excel,monitoring_se):
 
 
 
-def concat_and_sort(df_fte, df_vendor):
-    df_fte=pd.concat([df_fte,df_vendor])
-    sum_case_today = df_fte["case today"].sum()
-    sum_task_today = df_fte["task today"].sum()
-    sum_active_case_this_week = df_fte["active case this week"].sum()
-    sum_active_task_this_week = df_fte["active task this week"].sum()
-    df_fte.loc["Total"] = ""
-    df_fte.loc["Total", "case today"] = sum_case_today
-    df_fte.loc["Total", "task today"] = sum_task_today
-    df_fte.loc["Total", "active case this week"] = sum_active_case_this_week
-    df_fte.loc["Total", "active task this week"] = sum_active_task_this_week
-    return df_fte
-
+def concat_and_sort(*iterables):
+    df_all=pd.concat(iterables)
+    sum_case_today = df_all["case today"].sum()
+    sum_task_today = df_all["task today"].sum()
+    sum_active_case_this_week = df_all["active case this week"].sum()
+    sum_active_task_this_week = df_all["active task this week"].sum()
+    df_all.loc["Total"] = ""
+    df_all.loc["Total", "case today"] = sum_case_today
+    df_all.loc["Total", "task today"] = sum_task_today
+    df_all.loc["Total", "active case this week"] = sum_active_case_this_week
+    df_all.loc["Total", "active task this week"] = sum_active_task_this_week
+    return df_all
 
 
 
