@@ -56,7 +56,7 @@ name_mapping = {"Nina Li": "Nina", "Maggie Dong": "Maggie", "Anna Gao": "Anna", 
 
 leave_dict = {}
 total_days_of_month =0
-local_debug = True
+local_debug = False
 downloaded_excel_path = "./CaseAssignment.xlsx" if local_debug else '/tmp/a.xlsx'
 
 # 显示所有行
