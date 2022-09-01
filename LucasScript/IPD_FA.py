@@ -33,7 +33,6 @@ monitoring_tw_se = ["Jeff","Tina","Cheryl"]
 monitoring_au_se = ["Chris", "Nicky"]
 
 
-
 #all_se = monitoring_fte_se + monitoring_vendor_se
 all_se = monitoring_fte_se  + monitoring_tw_se+monitoring_au_se
 
@@ -74,7 +73,8 @@ def get_json_result():
 
 def get_markdown4excel():
     print_hi('Script is running, please wait until finish')
-    df_all = get_excel_data(getEveryDay(*get_days_per_command()))
+    begin_date,end_date = get_days_per_command()
+    df_all = get_excel_data(getEveryDay(begin_date,end_date))
 
 
 
