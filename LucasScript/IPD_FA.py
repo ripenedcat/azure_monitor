@@ -122,7 +122,7 @@ def get_days_per_command():
     根据输入的指令，获取日期list
     :return:
     '''
-    global leave_dict,total_days_of_month
+    global leave_dict,total_days_of_month,command
     today = date.today()
     year = today.year
 
