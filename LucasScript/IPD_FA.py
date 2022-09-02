@@ -20,14 +20,12 @@ from datetime import date, datetime, timedelta
 import tabulate
 import datetime
 import logging
-
-
+global command
 try:
-    
-    logging.info(f"command in try = {command}")
+    command
 except:
     command = "ipd_last_month"
-    logging.info(f"command in except = {command}")
+
 
 monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
                  "Niki", "Nina",  "Qianqian",  "Wuhao","Hugh","Sophia","Howard","Jimmy","Lucas","Jason","Wenru","Jingjing","Chunyan"]
