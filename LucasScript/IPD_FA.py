@@ -21,7 +21,7 @@ import tabulate
 import datetime
 import logging
 
-global command
+
 try:
     
     logging.info(f"command in try = {command}")
