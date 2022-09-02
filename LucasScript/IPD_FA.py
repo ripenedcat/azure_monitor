@@ -20,9 +20,11 @@ from datetime import date, datetime, timedelta
 import tabulate
 import datetime
 import logging
-
 global command
-
+try:
+    command
+except:
+    command = "ipd_last_month"
 
 
 monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
@@ -122,7 +124,7 @@ def get_days_per_command():
     根据输入的指令，获取日期list
     :return:
     '''
-    global leave_dict,total_days_of_month,command
+    global leave_dict,total_days_of_month
     today = date.today()
     year = today.year
     logging.info(f"command in script = {command}")
@@ -154,7 +156,7 @@ def get_days_per_command():
     else:
         return []
     print(leave_dict)
-    print(f"start = {start},end = {end}")
+    logging.info(f"start = {start},end = {end}")
     return start,end
 # Press the green button in the gutter to run the script.
 def get_excel_data(date_list):
