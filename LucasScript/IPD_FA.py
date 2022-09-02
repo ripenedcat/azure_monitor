@@ -20,6 +20,8 @@ from datetime import date, datetime, timedelta
 import tabulate
 import datetime
 import logging
+
+global command
 try:
     command
 except:
