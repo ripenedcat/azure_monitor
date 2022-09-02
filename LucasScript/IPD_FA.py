@@ -22,10 +22,7 @@ import datetime
 import logging
 
 global command
-try:
-    command
-except:
-    command = "ipd_this_month"
+
 
 
 monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
