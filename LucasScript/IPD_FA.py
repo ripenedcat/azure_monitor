@@ -20,10 +20,10 @@ from datetime import date, datetime, timedelta
 import tabulate
 import datetime
 import logging
-logging.info(f"command before global = {command}")
+
 global command
 try:
-    command
+    
     logging.info(f"command in try = {command}")
 except:
     command = "ipd_last_month"
