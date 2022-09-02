@@ -19,6 +19,7 @@ from enum import Enum
 from datetime import date, datetime, timedelta
 import tabulate
 import datetime
+import logging
 try:
     command
 except:
@@ -125,7 +126,7 @@ def get_days_per_command():
     global leave_dict,total_days_of_month,command
     today = date.today()
     year = today.year
-
+    logging.info(f"command in script = {command}")
 
     if command == "ipd_this_month":
         last_day_of_this_month = today.replace(day=1) + relativedelta(months=1) - timedelta(days=1)
