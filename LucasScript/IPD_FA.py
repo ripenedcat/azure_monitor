@@ -183,7 +183,7 @@ def get_excel_data(date_list):
     #print(df_monitoring_case)
 
     # 新建一个工作簿
-    ret = pd.DataFrame(columns=['Case Volume', 'Collaboration Task Volume', "Total" , "Working days","Daily Volume"],
+    ret = pd.DataFrame(columns=['Case Volume', 'Collaboration Task Volume',"Outage Volume", "Total" , "Working days","Daily Volume"],
                        index=all_se)
     ret.loc[:, :] = 0
 
@@ -196,16 +196,24 @@ def get_excel_data(date_list):
 
         # case this week
         temp_df_case_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("case")]
+        temp_df_case_this_week = df_case[~df_case['Is Outage?'].astype(str).str.lower().contains("y")]
         temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case owner"].str.strip() == se]
         ret.loc[se, "Case Volume"] = temp_df_case_this_week.shape[0]
         # collab this week
         temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("collab")]
+        temp_df_task_this_week = df_case[~df_case['Is Outage?'].astype(str).str.lower().contains("y")]
         temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case owner"].str.strip() == se]
         ret.loc[se, "Collaboration Task Volume"] = temp_df_task_this_week.shape[0]
 
+        #Outage
+        temp_df_outage_this_week = df_case[df_case['Is Outage?'].astype(str).str.lower().contains("y")]
+        temp_df_outage_this_week = temp_df_outage_this_week[temp_df_task_this_week["Case owner"].str.strip() == se]
+        ret.loc[se, "Outage Volume"] = temp_df_outage_this_week.shape[0]
 
         # weekly total
-        ret.loc[se, "Total"] = ret.loc[se, "Case Volume"]+ ret.loc[se, "Collaboration Task Volume"]
+        ret.loc[se, "Total"] = ret.loc[se, "Case Volume"]+ ret.loc[se, "Collaboration Task Volume"] + ret.loc[se, "Outage Volume"]
+
+
 
         #working days
 
@@ -214,7 +222,7 @@ def get_excel_data(date_list):
         else:
             ret.loc[se, "Working days"] = 0
         if ret.loc[se, "Working days"] != 0:
-            ret.loc[se, "Daily Volume"] =  ret.loc[se, "Total"] / ret.loc[se, "Working days"]
+            ret.loc[se, "Daily Volume"] =  (ret.loc[se, "Case Volume"]+ ret.loc[se, "Collaboration Task Volume"]+ ret.loc[se, "Outage Volume"]*0.33)/ ret.loc[se, "Working days"]
         else:
             ret.loc[se, "Daily Volume"] =  0
 
