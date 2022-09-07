@@ -196,17 +196,17 @@ def get_excel_data(date_list):
 
         # case this week
         temp_df_case_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("case")]
-        temp_df_case_this_week = df_case[~df_case['Is Outage?'].astype(str).str.lower().contains("y")]
+        temp_df_case_this_week = df_case[~df_case['Is Outage?'].astype(str).str.lower().str.contains("y")]
         temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case owner"].str.strip() == se]
         ret.loc[se, "Case Volume"] = temp_df_case_this_week.shape[0]
         # collab this week
         temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("collab")]
-        temp_df_task_this_week = df_case[~df_case['Is Outage?'].astype(str).str.lower().contains("y")]
+        temp_df_task_this_week = df_case[~df_case['Is Outage?'].astype(str).str.lower().str.contains("y")]
         temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case owner"].str.strip() == se]
         ret.loc[se, "Collaboration Task Volume"] = temp_df_task_this_week.shape[0]
 
         #Outage
-        temp_df_outage_this_week = df_case[df_case['Is Outage?'].astype(str).str.lower().contains("y")]
+        temp_df_outage_this_week = df_case[df_case['Is Outage?'].astype(str).str.lower().str.contains("y")]
         temp_df_outage_this_week = temp_df_outage_this_week[temp_df_task_this_week["Case owner"].str.strip() == se]
         ret.loc[se, "Outage Volume"] = temp_df_outage_this_week.shape[0]
 
