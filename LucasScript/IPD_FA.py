@@ -13,13 +13,14 @@ import json
 from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 import pandas as pd
-import requests
+import requests,openpyxl
 import calendar
 from enum import Enum
 from datetime import date, datetime, timedelta
 import tabulate
 import datetime
 import logging
+from io import BytesIO
 global command
 try:
     command
@@ -57,7 +58,7 @@ name_mapping = {"Nina Li": "Nina", "Maggie Dong": "Maggie", "Anna Gao": "Anna", 
 
 leave_dict = {}
 total_days_of_month =0
-local_debug = False
+local_debug = True
 downloaded_excel_path = "./CaseAssignment.xlsx" if local_debug else '/tmp/a.xlsx'
 
 # 显示所有行
@@ -140,7 +141,7 @@ def get_days_per_command():
         if last_week_end.month != now.month:
             return []
         start = today.replace(day=1)
-        end = today
+        end = last_week_end
         total_days_of_month = today.day
 
 
@@ -172,9 +173,11 @@ def get_excel_data(date_list):
     excel_response = requests.get(
         "https://lucasstorageaccount.blob.core.windows.net/token/CaseAssignment.xlsx")
     excel_response = excel_response.content
-    with open(downloaded_excel_path, 'wb') as f:
-        f.write(excel_response)
-    case_excel = downloaded_excel_path
+    # with open(downloaded_excel_path, 'wb') as f:
+    #     f.write(excel_response)
+    excel_binary = openpyxl.load_workbook(filename=BytesIO(excel_response),data_only=True)
+
+    case_excel = excel_binary
     df_monitoring_case = pd.read_excel(case_excel,sheet_name='Azure Monitoring',engine='openpyxl')
     df_monitoring_case = df_monitoring_case.dropna(axis=1, how='all')
     df_monitoring_case = df_monitoring_case.loc[df_monitoring_case['Date'].isin(date_list)]
