@@ -17,10 +17,11 @@ monitoring_fte = [ 'Anna', "Sophia","Hugh",
                  "Junsen", "Kelly", "Jason","Wenru",
                  "Niki", "Nina",  "Qianqian", "Wuhao","Howard","Jimmy",'Arthur',"Lucas","Jingjing","Chunyan"]
 monitoring_vendor = [ "Victor",  "Aristo",
-                 "Jack", "Jerome", "Jiaqi", "Wan","Allen","Tony","Adelaide","Cici","Jack Zhou","Alen","Ivan"]
+                 "Jack", "Jerome", "Jiaqi", "Wan","Allen","Tony","Adelaide","Cici","Jack Zhou","Alen","Ivan","Stacy","Cecilia"]
 
 monitoring_tw = ['Jeff','Cheryl',"Tina"]
 monitoring_au = ['Chris','Nicky']
+all_se = monitoring_fte + monitoring_vendor + monitoring_tw+monitoring_au
 
 name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu":"Andy","Kelly Zhou":"Kelly","Qi Chen":"Qi",
               "Wuhao Chen":"Wuhao","Qianqian Liu":"Qianqian","Junsen Chen":"Junsen","Mark He":"Mark","Hugh Chao":"Hugh",
@@ -28,7 +29,8 @@ name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu
               "Yue Mei":"Edwin","Jeremy Liang":"Jeremy","Jack Bian":"Jack","Jiaqi Deng":"Jiaqi","Arthur Huang":"Arthur",
               "Jerome Guan":"Jerome","Lucas Huang":"Lucas","Xuanyi Liu":"Xuanyi","Chener Zhang":"Chener","Aristo Liao":"Aristo",
               "Victor Zhang":"Victor","Guangyu Zhang":"Victor","Tony Li":"Tony","Allen Liang":"Allen","Jason Zhou":"Jason","Adelaide Wu":"Adelaide","Xichen Xue":"Cici","Jack Zhou":"Jack Zhou",
-              "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan Tong":"Ivan","Jingjing Cai":"Jingjing","Chunyan Liu":"Chunyan"}
+              "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan Tong":"Ivan","Jingjing Cai":"Jingjing","Chunyan Liu":"Chunyan",
+              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia"}
 
 pd.set_option('display.max_columns', None)
 # 显示所有行
@@ -75,7 +77,7 @@ def get_week_off():
     for k,v in week_off_dict.items():
         if k in name_mapping.keys():
             name = name_mapping[k]
-            if name in monitoring_fte or name in monitoring_vendor:
+            if name in all_se:
                 new_week_off_dict[name]=v
     return new_week_off_dict
 # Press the green button in the gutter to run the script.
@@ -115,7 +117,7 @@ def get_se_data(df_excel,monitoring_se):
         # workdays
         #ret.loc[se, "workdays"] -= off_days[se]
         if se in new_week_off_dict.keys():
-            ret.loc[se, "workdays"] -= new_week_off_dict[se]
+            ret.loc[se, "workdays"] = ret.loc[se, "workdays"]*1.0 - new_week_off_dict[se]
         # case this week
         temp_df_case_this_week = df_excel[df_excel['Case/Task'].astype(str).str.contains("Case")]
         temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case owner"].str.strip() == se]
