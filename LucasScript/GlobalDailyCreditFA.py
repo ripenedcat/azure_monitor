@@ -31,7 +31,7 @@ today = time.strftime("%Y-%m-%d", d)
 print("today:",today)
 print("weekday_shift = ",weekday_shift)
 
-local_debug = False
+local_debug = True
 downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
 def get_json_result():
@@ -63,9 +63,10 @@ def get_excel_data():
     response = requests.get('https://prod-00.eastus.logic.azure.com:443/workflows/764229174611433581f584080a1c15c1/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CekobRDm-H9Dx-tBTpXOblRXrJqihxBoTeCyilDCi2w')
     excel_response = requests.get("https://lucasstorageaccount.blob.core.windows.net/token/Monitoring Today's Cases and Credit This Week.xlsx")
     excel_response = excel_response.content
-    with open(downloaded_excel_path,'wb') as f:
-        f.write(excel_response)
-    df = pd.read_excel(downloaded_excel_path,
+    # with open(downloaded_excel_path,'wb') as f:
+    #     f.write(excel_response)
+    excel_binary = openpyxl.load_workbook(filename=BytesIO(excel_response),data_only=True)
+    df = pd.read_excel(excel_binary,
                        sheet_name='Case this week', engine='openpyxl')
     # df_au = pd.read_excel(downloaded_excel_path,
     #                       sheet_name='AU Case Assignment', engine='openpyxl')
