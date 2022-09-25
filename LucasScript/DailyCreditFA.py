@@ -6,7 +6,7 @@
 import pandas as pd
 import time
 import datetime
-import json,requests,openpyxl
+import json,requests,openpyxl,logging
 from io import BytesIO
 import tabulate
 
@@ -30,14 +30,19 @@ name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu
               "Jerome Guan":"Jerome","Lucas Huang":"Lucas","Xuanyi Liu":"Xuanyi","Chener Zhang":"Chener","Aristo Liao":"Aristo",
               "Victor Zhang":"Victor","Guangyu Zhang":"Victor","Tony Li":"Tony","Allen Liang":"Allen","Jason Zhou":"Jason","Adelaide Wu":"Adelaide","Xichen Xue":"Cici","Jack Zhou":"Jack Zhou",
               "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan Tong":"Ivan","Jingjing Cai":"Jingjing","Chunyan Liu":"Chunyan",
-              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia"}
+              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia","Cheryl Huang":"Cheryl","Tina Su":"Tina","Jeff Lee":"Jeff","Chris Butrymowicz":"Chris",
+              "Nicky Lian":"Nicky"
+
+
+
+}
 
 pd.set_option('display.max_columns', None)
 # 显示所有行
 pd.set_option('display.max_rows', None)
 new_week_off_dict={}
-local_debug = False
-downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
+# local_debug = True
+# downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
 def get_json_result():
     data = get_markdown4excel()
@@ -88,9 +93,10 @@ def get_excel_data():
     response = requests.get('https://prod-00.eastus.logic.azure.com:443/workflows/764229174611433581f584080a1c15c1/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CekobRDm-H9Dx-tBTpXOblRXrJqihxBoTeCyilDCi2w')
     excel_response = requests.get("https://lucasstorageaccount.blob.core.windows.net/token/Monitoring Today's Cases and Credit This Week.xlsx")
     excel_response = excel_response.content
-    with open(downloaded_excel_path,'wb') as f:
-        f.write(excel_response)
-    df = pd.read_excel(downloaded_excel_path,
+    # with open(downloaded_excel_path,'wb') as f:
+    #     f.write(excel_response)
+    excel_binary = openpyxl.load_workbook(filename=BytesIO(excel_response),data_only=True)
+    df = pd.read_excel(excel_binary,
                        sheet_name='Case this week',engine='openpyxl')
     # 新建一个工作簿
     df = df.dropna(axis=0, how='all')
@@ -103,6 +109,8 @@ def get_se_data(df_excel,monitoring_se):
 
     weekday_shift = time.strftime("%w", d)
     weekday_shift = int(weekday_shift)
+    if weekday_shift==0:
+        weekday_shift=7
     today = time.strftime("%Y-%m-%d", d)
     print("today:",today)
     print("weekday_shift = ",weekday_shift)
