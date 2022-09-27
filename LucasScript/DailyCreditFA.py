@@ -66,8 +66,8 @@ def get_markdown4excel():
     print(df_tw)
     df_au = get_se_data(df_excel, monitoring_au)
     print(df_au)
-    df_ge = concat_and_sort(df_fte,df_tw,df_au ,df_vendor)
-    df_vendor = concat_and_sort(df_fte,df_tw,df_au ,df_vendor)
+    df_ge = concat_and_sort(df_fte,df_tw,df_au )
+    df_vendor = concat_and_sort(df_vendor)
     return df_ge.to_markdown(stralign="center",numalign="center")+"place_to_split"+df_vendor.to_markdown(stralign="center",numalign="center")
 
 def print_hi(name):
