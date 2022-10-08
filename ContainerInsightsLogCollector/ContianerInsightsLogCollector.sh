@@ -50,7 +50,7 @@ log_collector()
     kubectl cp -n kube-system $RSOMSPOD:/var/opt/microsoft/docker-cimprov/log $path/$RSOMSPOD 1>/dev/null
     
 
-    for OMSPOD in $(kubectl get pods -n kube-system | grep omsagent | awk '{print $1}' )
+    for OMSPOD in $(kubectl get pods -n kube-system | grep "$current_agent_name" | awk '{print $1}' )
     do
         if [ $OMSPOD == $RSOMSPOD ] ; then continue
         else 
