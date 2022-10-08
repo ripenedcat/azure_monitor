@@ -8,19 +8,18 @@ https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insigh
 Bash environment with kubectl connected to target cluster.
 
 ## Usage
-`wget https://raw.githubusercontent.com/antomatody/ContainerInsightsLogCollector/main/ContianerInsightsLogCollector.sh && bash ContianerInsightsLogCollector.sh`
+`wget https://raw.githubusercontent.com/ripenedcat/azure_monitor/main/ContainerInsightsLogCollector/ContianerInsightsLogCollector.sh && bash ContianerInsightsLogCollector.sh`
 
 ## Function
-1. Let you choose if you want to delete current OMS agent pods first.(will be recreated)
-2. Collect:
+1. Collect:
 - omsagent deployment
 - configmap 
-3. For omsagent-rs-xxxxx pod , collect:
+2. For omsagent-rs-xxxxx pod , collect:
 - describe pod
 - container log
 - agent log
 - cim log
-4. For 1 random omsagent-xxxxx pod, collect:
+3. For 1 random omsagent-xxxxx pod, collect:
 - describe pod
 - container omsagent log
 - agent log
