@@ -68,17 +68,18 @@ pd.set_option('display.max_rows', None)
 def get_json_result():
     data = get_markdown4excel()
     success = True
+    message=''
     if command == "ipd_last_month":
-        message = f'Note:IPD last month is calculated by real working days, including Transferred Out.'
+        message = f'Note: IPD last month is calculated by real working days, including Transferred Out.'
     if command == "ipd_this_month":
-        message = f'Note:IPD this month is calculated from volume by last Sunday, including Transferred Out.'
+        message = f'Note: IPD this month is calculated from volume by last Sunday, including Transferred Out.'
     return json.dumps({"data":data,"success":success,"message":message})
 
 def get_markdown4excel():
     print_hi('Script is running, please wait until finish')
     begin_date,end_date = get_days_per_command()
     df_all = get_excel_data(getEveryDay(begin_date,end_date))
-
+    logging.info(f'df_all = {df_all}')
 
 
     return df_all.to_markdown(stralign="center",numalign="center")
@@ -156,7 +157,7 @@ def get_days_per_command():
         total_days_of_month = days_of_month(year,month)
     else:
         return []
-    print(leave_dict)
+    logging.info(f'leave_dict = {leave_dict}')
     logging.info(f"start = {start},end = {end}")
     return start,end
 # Press the green button in the gutter to run the script.
@@ -181,7 +182,7 @@ def get_excel_data(date_list):
     df_monitoring_case = pd.read_excel(case_excel,sheet_name='Azure Monitoring',engine='openpyxl')
     df_monitoring_case = df_monitoring_case.dropna(axis=1, how='all')
     df_monitoring_case = df_monitoring_case.loc[df_monitoring_case['Date'].isin(date_list)]
-    print("------------df_monitoring_case=-------------")
+    logging.info("------------df_monitoring_case=-------------")
 
     #print(df_monitoring_case)
 
@@ -191,7 +192,7 @@ def get_excel_data(date_list):
     ret.loc[:, :] = 0
 
     for se in all_se:
-        print(" ------------- ",se,'-----------------')
+        logging.info(" ------------- ",se,'-----------------')
         # if se in integration_se:
         #     df_case = df_integration_case
         # else:
