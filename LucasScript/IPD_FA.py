@@ -89,8 +89,8 @@ def print_hi(name):
     logging.info(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 def get_leave_days(cmd):
-    url = "https://botmonitoringcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
-    payload = json.dumps({"date_list":[],"command":cmd})
+    url = "https://botcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
+    payload = json.dumps({"date_list":[],"command":cmd,'target_team':'monitor'})
     response = requests.post(url, data=payload)
     week_off_dict = json.loads(response.text)
     new_week_off_dict = {}
@@ -128,7 +128,7 @@ def get_days_per_command():
     global leave_dict,total_days_of_month
     today = date.today()
     year = today.year
-    logging.info(f"command in script = {command}")
+    logging.info(f"IPD_FA.py command in script = {command}")
 
     if command == "ipd_this_month":
         last_day_of_this_month = today.replace(day=1) + relativedelta(months=1) - timedelta(days=1)
