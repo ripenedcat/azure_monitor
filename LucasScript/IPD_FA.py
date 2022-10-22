@@ -192,7 +192,7 @@ def get_excel_data(date_list):
     ret.loc[:, :] = 0
 
     for se in all_se:
-        logging.info(" ------------- ",se,'-----------------')
+        logging.info(f" ------------- {se}-----------------")
         # if se in integration_se:
         #     df_case = df_integration_case
         # else:
