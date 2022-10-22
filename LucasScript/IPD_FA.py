@@ -73,7 +73,9 @@ def get_json_result():
         message = f'Note: IPD last month is calculated by real working days, including Transferred Out.'
     if command == "ipd_this_month":
         message = f'Note: IPD this month is calculated from volume by last Sunday, including Transferred Out.'
-    return json.dumps({"data":data,"success":success,"message":message})
+    dto = json.dumps({"data":data,"success":success,"message":message})
+    logging.info(f"IPD_FA.py: final data = {dto}")
+    return dto
 
 def get_markdown4excel():
     print_hi('Script is running, please wait until finish')
@@ -244,6 +246,7 @@ def get_excel_data(date_list):
 
 
 if __name__=="__main__":
+    logging.getLogger().setLevel(logging.INFO)
     print(get_markdown4excel())
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
