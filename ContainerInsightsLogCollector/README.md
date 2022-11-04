@@ -12,14 +12,14 @@ Bash environment with kubectl connected to target cluster.
 
 ## Function
 1. Collect:
-- omsagent deployment
+- ama-logs/omsagent deployment
 - configmap 
-2. For omsagent-rs-xxxxx pod , collect:
+2. For ama-logs-rs-xxxxx or omsagent-rs-xxxxx pod , collect:
 - describe pod
 - container log
 - agent log
 - cim log
-3. For 1 random omsagent-xxxxx pod, collect:
+3. For 1 random ama-logs-xxxxx or omsagent-xxxxx pod, collect:
 - describe pod
 - container omsagent log
 - agent log
