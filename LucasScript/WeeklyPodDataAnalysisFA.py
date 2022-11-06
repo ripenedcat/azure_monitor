@@ -63,7 +63,7 @@ monitoring_vendor_se = [
 monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
                  "Niki", "Nina",  "Qianqian",  "Wuhao","Hugh","Sophia","Howard","Jimmy","Lucas","Jason","Wenru","Jingjing","Chunyan"]
 
-monitoring_tw_se = ["Jeff","Tina","Cheryl"]
+monitoring_tw_se = ["Jeff","Cheryl"]
 
 monitoring_au_se = ["Chris", "Nicky"]
 
