@@ -73,22 +73,7 @@ integration_se = ["yuzhang6","yuaf","jiecao","zhangz","qili7","v-haoshe","jiaqit
 #all_se = monitoring_fte_se + monitoring_vendor_se
 all_se = monitoring_fte_se + monitoring_vendor_se + monitoring_tw_se+monitoring_au_se
 
-# possible_names = {"Andy":["Andy Wu","Hao Wu","Andy W"],"Anna":["Xue Gao","Xue G"],"Bruno":["Bruno L","Bruno Liu"],"Hugh":["Hui C","Hui Chao","Hugh C","Hugh Chao"],"Junsen":["Junsen C","Junsen Chen"],
-#                  "Kelly":["Yinan Zhou","Yinan Z","Kelly Zhou","Kelly Z"],"Qianqian":["Qianqian L","Qianqian l","Qianqian Liu"],"Maggie":["Meijiao Dong","Maggie D"],
-#                  "Mark":["Xiaowei He","Xiaowei H","Mark He","Mark H"],"Nina":["Na L","Nina Li"],"Qi":["Qi C","Qi Chen"],"Sophia":["Sophia Z","Sophia Zhang"],"Arthur":["Arthur Huang","Arthur H"],
-#                  "Jack":["Jack Bian","Jack B"],"Jeremy":["Jeremy Liang"],"Jerome":["Junhao Guan","Junhao G","Jerome G","Jerome Guan"],"Jiaqi":["Jiaqi Deng","Jiaqi D"],"Li":["Li Zhang"],
-#                  "Wan":["Treasure Huang","Treasure H","Wan Huang","Wan H"],"Edwin":["Edwin Mei","Edwin M"],"Lucas":["Zixin H","Lucas H","Lucas Huang","Zixin Huang"],"Wuhao":["Wuhao Chen","Wuhao C"],
-#                  "Xuanyi":["Xuanyi L"],"Niki":["Yan J","Yan Jin","Niki Jin","Niki J"],"Howard":["Howard P","Howard Pei"],"Jimmy":["Ji B","Ji Bian"],"Chener":["Chener Zhang","Chener Z"],
-#                   "Aristo":["Fang L","Fang Liao"],"Victor":["Guangyu Zhang","Guangyu Z"],"Jason":["Jason Zhou","Jason Z","Sheng Zhou","Sheng Z"],"Allen":["Zhaonian Liang","Zhaonian L"],"Tony":["Tianyu Li","Tianyu L"],
-#                   "yuzhang6":["Yu Zhang","Yu Z"],"v-haoshe":["Haozhou Shen","Haozhou S"],"jiaqitong":["Jiaqi T"],"jiecao":["Jie Cao","Jie C"],"qili7":["Qing L"],
-#                   "wjzhang":["Wen-Jun Zhang","Wen-Jun Z"],"wenbi":["Wenzhe Bi","Wenzhe B"],"yanden":["Yanbo Deng","Yanbo D"],"yinshi":["Yingjie Shi","Yingjie S"],
-#                   "yuaf":["Yuanchang F"],"zhangz":["Ziyu Z"],"huidongliu":["Huidong Liu","Huidong L"],"beixiao":["Bei Xiao","Bei X"],"Adelaide":["Lingjie Wu","Lingjie W"],"Cici":["Cici Xue","Cici X"],
-#                   "Jack Zhou":["Jack Zhou","Jack Z"],"Alen":["Zheyi Zheng","Zheyi Z","Alen Zheng","Alen Z"],"Chunyan":["Chunyan Liu","Chunyan L"],"Jingjing":["Jingjing Cai","Jingjing C"],"Phoebe":["Phoebe Wan","Phoebe W"],
-#                   "Wenru":["Wenru Huang","Wenru H"],"Ivan":["Ivan Tong","Ivan T","Chen Tong","Chen T"],
-#                     "Jeff":["Jeff Lee","Jeff L"],"Tina":["Tina Su","Tina S"],"Cheryl":["Cheryl Huang","Cheryl H"],
-#                   "Chris":["Chris B","Chris Butrymowicz"],"Nicky":["Nicky L","Nicky Lian"]
-#                  }
-#to do: 不要自动获取alias,手写算了
+
 name_alias_mapping = { 'Arthur':"arthurhuang", 'Anna':"xuegao",   "Junsen":"junsche", "Kelly":"yinazhou","Niki":"yanj", "Nina":"nali2",
                        "Qianqian":"liqianqi",  "Wuhao":"wuhchen","Hugh":"huichao","Sophia":"yiqianzhang","Howard":"howardpei","Jimmy":"bianji","Lucas":"lucashuang",
                        "Jason":"shengzhou","Wenru":"v-wenruhuang","Jingjing":"jingjingcai","Chunyan":"chunyanliu" ,
