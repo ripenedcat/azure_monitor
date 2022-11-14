@@ -21,7 +21,7 @@ monitoring_vendor = [ "Victor",  "Aristo",
 
 monitoring_tw = ['Jeff','Cheryl']
 monitoring_au = ['Chris','Nicky']
-monitoring_scem = ['Tina']
+monitoring_scem = ['Tina He']
 
 all_se = monitoring_fte + monitoring_vendor + monitoring_tw+monitoring_au+monitoring_scem
 
