@@ -19,9 +19,11 @@ monitoring_fte = [ 'Anna', "Sophia","Hugh",
 monitoring_vendor = [ "Victor",  "Aristo",
                  "Jack", "Jerome", "Jiaqi", "Wan","Allen","Tony","Adelaide","Cici","Jack Zhou","Alen","Ivan","Stacy","Cecilia"]
 
-monitoring_tw = ['Jeff','Cheryl',"Tina"]
+monitoring_tw = ['Jeff','Cheryl']
 monitoring_au = ['Chris','Nicky']
-all_se = monitoring_fte + monitoring_vendor + monitoring_tw+monitoring_au
+monitoring_scem = ['Tina']
+
+all_se = monitoring_fte + monitoring_vendor + monitoring_tw+monitoring_au+monitoring_scem
 
 name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu":"Andy","Kelly Zhou":"Kelly","Qi Chen":"Qi",
               "Wuhao Chen":"Wuhao","Qianqian Liu":"Qianqian","Junsen Chen":"Junsen","Mark He":"Mark","Hugh Chao":"Hugh",
@@ -30,7 +32,7 @@ name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu
               "Jerome Guan":"Jerome","Lucas Huang":"Lucas","Xuanyi Liu":"Xuanyi","Chener Zhang":"Chener","Aristo Liao":"Aristo",
               "Victor Zhang":"Victor","Guangyu Zhang":"Victor","Tony Li":"Tony","Allen Liang":"Allen","Jason Zhou":"Jason","Adelaide Wu":"Adelaide","Xichen Xue":"Cici","Jack Zhou":"Jack Zhou",
               "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan Tong":"Ivan","Jingjing Cai":"Jingjing","Chunyan Liu":"Chunyan",
-              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia","Cheryl Huang":"Cheryl","Tina Su":"Tina","Jeff Lee":"Jeff","Chris Butrymowicz":"Chris",
+              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia","Cheryl Huang":"Cheryl","Tina He":"Tina","Jeff Lee":"Jeff","Chris Butrymowicz":"Chris",
               "Nicky Lian":"Nicky"
 
 
@@ -66,7 +68,9 @@ def get_markdown4excel():
     print(df_tw)
     df_au = get_se_data(df_excel, monitoring_au)
     print(df_au)
-    df_ge = concat_and_sort(df_fte,df_tw,df_au )
+    df_scem = get_se_data(df_excel, monitoring_au)
+    print(df_scem)
+    df_ge = concat_and_sort(df_fte,df_tw,df_au,df_scem )
     df_vendor = concat_and_sort(df_vendor)
     return df_ge.to_markdown(stralign="center",numalign="center")+"place_to_split"+df_vendor.to_markdown(stralign="center",numalign="center")
 
