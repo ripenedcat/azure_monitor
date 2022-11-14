@@ -32,7 +32,7 @@ name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu
               "Jerome Guan":"Jerome","Lucas Huang":"Lucas","Xuanyi Liu":"Xuanyi","Chener Zhang":"Chener","Aristo Liao":"Aristo",
               "Victor Zhang":"Victor","Guangyu Zhang":"Victor","Tony Li":"Tony","Allen Liang":"Allen","Jason Zhou":"Jason","Adelaide Wu":"Adelaide","Xichen Xue":"Cici","Jack Zhou":"Jack Zhou",
               "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan Tong":"Ivan","Jingjing Cai":"Jingjing","Chunyan Liu":"Chunyan",
-              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia","Cheryl Huang":"Cheryl","Tina He":"Tina","Jeff Lee":"Jeff","Chris Butrymowicz":"Chris",
+              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia","Cheryl Huang":"Cheryl","Tina He":"Tina He","Jeff Lee":"Jeff","Chris Butrymowicz":"Chris",
               "Nicky Lian":"Nicky"
 
 
