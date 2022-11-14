@@ -55,7 +55,7 @@ def get_json_result():
 def get_markdown4excel():
     global new_week_off_dict
     print_hi('Script is running, please wait until finish')
-    new_week_off_dict = get_week_off()
+    new_week_off_dict = get_week_off_monitor() | get_week_off_scem()
     df_excel = get_excel_data()
     print(df_excel)
 
@@ -68,7 +68,7 @@ def get_markdown4excel():
     print(df_tw)
     df_au = get_se_data(df_excel, monitoring_au)
     print(df_au)
-    df_scem = get_se_data(df_excel, monitoring_au)
+    df_scem = get_se_data(df_excel, monitoring_scem)
     print(df_scem)
     df_ge = concat_and_sort(df_fte,df_tw,df_au,df_scem )
     df_vendor = concat_and_sort(df_vendor)
@@ -78,9 +78,21 @@ def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
-def get_week_off():
-    url = "https://botmonitoringcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
-    payload = json.dumps({"date_list":["123"],"command":"week_until_today"})
+def get_week_off_monitor():
+    url = "https://botcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
+    payload = json.dumps({"date_list":["123"],"command":"week_until_today",'target_team':'monitor'})
+    response = requests.post(url, data=payload)
+    week_off_dict = json.loads(response.text)
+    new_week_off_dict = {}
+    for k,v in week_off_dict.items():
+        if k in name_mapping.keys():
+            name = name_mapping[k]
+            if name in all_se:
+                new_week_off_dict[name]=v
+    return new_week_off_dict
+def get_week_off_scem():
+    url = "https://botcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
+    payload = json.dumps({"date_list":["123"],"command":"week_until_today",'target_team':'scem'})
     response = requests.post(url, data=payload)
     week_off_dict = json.loads(response.text)
     new_week_off_dict = {}
