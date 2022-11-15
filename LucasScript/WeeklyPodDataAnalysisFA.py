@@ -4,6 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import json
 from collections import defaultdict
+import logging
 
 import pandas as pd
 import requests,openpyxl
@@ -14,8 +15,9 @@ from io import BytesIO
 
 import tabulate
 #################Parameters######################
+logging.getLogger().setLevel(logging.INFO)
 try:
-    gl_fw
+    gl_fw =int(gl_fw)
 except:
     #gl_fw=7
     # 计算fiscal week
@@ -38,7 +40,7 @@ except:
         fiscal_year_start = fiscal_year_start.replace(year=today.year - 1)
     gl_fw =week_in_fiscal_year(today, fiscal_year_start)
 
-    print(f"path of gl_fw not set. Using defalut {gl_fw}")
+    logging.info(f"path of gl_fw not set. Using defalut {gl_fw}")
 
 try:
     backlog_excel
@@ -73,7 +75,22 @@ integration_se = ["yuzhang6","yuaf","jiecao","zhangz","qili7","v-haoshe","jiaqit
 #all_se = monitoring_fte_se + monitoring_vendor_se
 all_se = monitoring_fte_se + monitoring_vendor_se + monitoring_tw_se+monitoring_au_se
 
-
+# possible_names = {"Andy":["Andy Wu","Hao Wu","Andy W"],"Anna":["Xue Gao","Xue G"],"Bruno":["Bruno L","Bruno Liu"],"Hugh":["Hui C","Hui Chao","Hugh C","Hugh Chao"],"Junsen":["Junsen C","Junsen Chen"],
+#                  "Kelly":["Yinan Zhou","Yinan Z","Kelly Zhou","Kelly Z"],"Qianqian":["Qianqian L","Qianqian l","Qianqian Liu"],"Maggie":["Meijiao Dong","Maggie D"],
+#                  "Mark":["Xiaowei He","Xiaowei H","Mark He","Mark H"],"Nina":["Na L","Nina Li"],"Qi":["Qi C","Qi Chen"],"Sophia":["Sophia Z","Sophia Zhang"],"Arthur":["Arthur Huang","Arthur H"],
+#                  "Jack":["Jack Bian","Jack B"],"Jeremy":["Jeremy Liang"],"Jerome":["Junhao Guan","Junhao G","Jerome G","Jerome Guan"],"Jiaqi":["Jiaqi Deng","Jiaqi D"],"Li":["Li Zhang"],
+#                  "Wan":["Treasure Huang","Treasure H","Wan Huang","Wan H"],"Edwin":["Edwin Mei","Edwin M"],"Lucas":["Zixin H","Lucas H","Lucas Huang","Zixin Huang"],"Wuhao":["Wuhao Chen","Wuhao C"],
+#                  "Xuanyi":["Xuanyi L"],"Niki":["Yan J","Yan Jin","Niki Jin","Niki J"],"Howard":["Howard P","Howard Pei"],"Jimmy":["Ji B","Ji Bian"],"Chener":["Chener Zhang","Chener Z"],
+#                   "Aristo":["Fang L","Fang Liao"],"Victor":["Guangyu Zhang","Guangyu Z"],"Jason":["Jason Zhou","Jason Z","Sheng Zhou","Sheng Z"],"Allen":["Zhaonian Liang","Zhaonian L"],"Tony":["Tianyu Li","Tianyu L"],
+#                   "yuzhang6":["Yu Zhang","Yu Z"],"v-haoshe":["Haozhou Shen","Haozhou S"],"jiaqitong":["Jiaqi T"],"jiecao":["Jie Cao","Jie C"],"qili7":["Qing L"],
+#                   "wjzhang":["Wen-Jun Zhang","Wen-Jun Z"],"wenbi":["Wenzhe Bi","Wenzhe B"],"yanden":["Yanbo Deng","Yanbo D"],"yinshi":["Yingjie Shi","Yingjie S"],
+#                   "yuaf":["Yuanchang F"],"zhangz":["Ziyu Z"],"huidongliu":["Huidong Liu","Huidong L"],"beixiao":["Bei Xiao","Bei X"],"Adelaide":["Lingjie Wu","Lingjie W"],"Cici":["Cici Xue","Cici X"],
+#                   "Jack Zhou":["Jack Zhou","Jack Z"],"Alen":["Zheyi Zheng","Zheyi Z","Alen Zheng","Alen Z"],"Chunyan":["Chunyan Liu","Chunyan L"],"Jingjing":["Jingjing Cai","Jingjing C"],"Phoebe":["Phoebe Wan","Phoebe W"],
+#                   "Wenru":["Wenru Huang","Wenru H"],"Ivan":["Ivan Tong","Ivan T","Chen Tong","Chen T"],
+#                     "Jeff":["Jeff Lee","Jeff L"],"Tina":["Tina Su","Tina S"],"Cheryl":["Cheryl Huang","Cheryl H"],
+#                   "Chris":["Chris B","Chris Butrymowicz"],"Nicky":["Nicky L","Nicky Lian"]
+#                  }
+#to do: 不要自动获取alias,手写算了
 name_alias_mapping = { 'Arthur':"arthurhuang", 'Anna':"xuegao",   "Junsen":"junsche", "Kelly":"yinazhou","Niki":"yanj", "Nina":"nali2",
                        "Qianqian":"liqianqi",  "Wuhao":"wuhchen","Hugh":"huichao","Sophia":"yiqianzhang","Howard":"howardpei","Jimmy":"bianji","Lucas":"lucashuang",
                        "Jason":"shengzhou","Wenru":"v-wenruhuang","Jingjing":"jingjingcai","Chunyan":"chunyanliu" ,
@@ -169,7 +186,7 @@ def getNameMapping():
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    logging.info(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 
 # Press the green button in the gutter to run the script.
@@ -181,8 +198,8 @@ def get_excel_data(fw):
     # df_backlog = df_backlog[["Names","Cases","All Items"]]
     analyzeReport(getBacklog())
     df_backlog = get_df_backlog()
-    print("------------backlog=-------------")
-    print(df_backlog)
+    logging.info("------------backlog=-------------")
+    logging.info(df_backlog)
     # 获取在线case assignemnt
     response = requests.get("https://prod-25.eastus.logic.azure.com:443/workflows/377e11f2f61646f7832bbf9623dfa0df/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=OzigXT86xZbL_qS9q4hrY4zw0DU3Hld8NEGxkuyFlTo")
     excel_response = requests.get(
@@ -195,13 +212,13 @@ def get_excel_data(fw):
     df_monitoring_case = pd.read_excel(case_excel,sheet_name='Azure Monitoring',engine='openpyxl')
     df_monitoring_case = df_monitoring_case.dropna(axis=1, how='all')
     df_monitoring_case = df_monitoring_case.loc[df_monitoring_case['FW'] == fw]
-    print("------------df_monitoring_case=-------------")
+    logging.info("------------df_monitoring_case=-------------")
 
-    print(df_monitoring_case)
+    logging.info(df_monitoring_case)
     # df_integration_case = pd.read_excel(case_excel,sheet_name='Integration',engine='openpyxl')
     # df_integration_case = df_integration_case.dropna(axis=1, how='all')
     # df_integration_case = df_integration_case.loc[df_integration_case['FW'] == fw]
-    print("------------df_integration_case=-------------")
+    #print("------------df_integration_case=-------------")
 
     # print(df_integration_case)
     # df_case = pd.concat([df_monitoring_case,df_integration_case])
@@ -295,7 +312,7 @@ def get_excel_data(fw):
     #                                      + ret_general.loc[1, "Follow-up Task Volume"] + ret_general.loc[1, "Rave AR"]
 
     for se in all_se:
-        print(" ------------- ",se,'-----------------')
+        logging.info(f" -------------{se} ----------------")
         # if se in integration_se:
         #     df_case = df_integration_case
         # else:
@@ -323,10 +340,10 @@ def get_excel_data(fw):
                                     +ret.loc[se, "Rave AR"] + ret.loc[se, "Collaboration Task Volume"]
 
 
-        print(" ------------- ",se,'-----------------')
+        logging.info(f" ------------- {se}'-----------------")
         # Engineers Backlog Case Volume
         temp_df_backlog_case = df_backlog[df_backlog["Names"].str.strip() == se]
-        print(temp_df_backlog_case)
+        logging.info(temp_df_backlog_case)
         try:
             ret.loc[se, "Engineers Backlog Case Volume"] += temp_df_backlog_case["Cases"].values[0]
         except IndexError:
@@ -387,6 +404,7 @@ def get_excel_data(fw):
 
 
 if __name__=="__main__":
-    print(get_markdown4excel())
+
+    logging.info("\n"+get_markdown4excel())
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
