@@ -47,16 +47,21 @@ new_week_off_dict={}
 # downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
 def get_json_result():
-    data = get_markdown4excel()
-    success = True
-    message = f'This is daily credit for {time.strftime("%Y-%m-%d", time.localtime())}.'
+    try:
+        data = get_markdown4excel()
+        success = True
+        message = f'This is daily credit for {time.strftime("%Y-%m-%d", time.localtime())}.'
+    except Exception as e:
+        success = False
+        data = {}
+        message = f"Something Wrong. {str(e)}."
     return json.dumps({"data":data,"success":success,"message":message})
 
 def get_markdown4excel():
     global new_week_off_dict
     print_hi('Script is running, please wait until finish')
-    #new_week_off_dict = get_week_off_monitor() | get_week_off_scem()
-    new_week_off_dict = get_week_off_monitor()
+    new_week_off_dict = get_week_off_monitor() | get_week_off_scem()
+    #new_week_off_dict = get_week_off_monitor()
     df_excel = get_excel_data()
     print(df_excel)
 
@@ -90,6 +95,7 @@ def get_week_off_monitor():
             name = name_mapping[k]
             if name in all_se:
                 new_week_off_dict[name]=v
+    logging.info(f"monitor off dict = {new_week_off_dict}")
     return new_week_off_dict
 def get_week_off_scem():
     url = "https://botcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
@@ -102,6 +108,7 @@ def get_week_off_scem():
             name = name_mapping[k]
             if name in all_se:
                 new_week_off_dict[name]=v
+    logging.info(f"scem off dict = {new_week_off_dict}")
     return new_week_off_dict
 # Press the green button in the gutter to run the script.
 def get_excel_data():
@@ -215,6 +222,7 @@ def check_name(df_excel):
     pass
 
 if __name__=="__main__":
+    logging.getLogger().setLevel(logging.INFO)
     print(get_markdown4excel())
 
 
