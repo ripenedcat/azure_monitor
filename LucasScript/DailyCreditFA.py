@@ -55,7 +55,8 @@ def get_json_result():
 def get_markdown4excel():
     global new_week_off_dict
     print_hi('Script is running, please wait until finish')
-    new_week_off_dict = get_week_off_monitor() | get_week_off_scem()
+    #new_week_off_dict = get_week_off_monitor() | get_week_off_scem()
+    new_week_off_dict = get_week_off_monitor()
     df_excel = get_excel_data()
     print(df_excel)
 
