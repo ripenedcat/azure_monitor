@@ -25,7 +25,7 @@ global command
 try:
     command
 except:
-    command = "ipd_last_month"
+    command = "2022-11-01|2022-11-30"
 
 
 monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
@@ -158,9 +158,11 @@ def get_days_per_command():
         month = (today.replace(day=1) - timedelta(days=1)).month
         total_days_of_month = days_of_month(year,month)
     elif "|" in command:
-        start, end = command.split("|")
+        start_str, end_str = command.split("|")
         leave_dict = get_leave_days(command)
-        total_days_of_month = (datetime(end) - datetime(start)).days
+        start = datetime.datetime.strptime(start_str,'%Y-%m-%d')
+        end = datetime.datetime.strptime(end_str,'%Y-%m-%d')
+        total_days_of_month = (end - start).days
     else:
         return []
     logging.info(f'leave_dict = {leave_dict}')
