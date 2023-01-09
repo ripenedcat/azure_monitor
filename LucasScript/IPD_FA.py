@@ -68,7 +68,7 @@ pd.set_option('display.max_rows', None)
 def get_json_result():
     data = get_markdown4excel()
     success = True
-    message=''
+    message=' '
     if command == "ipd_last_month":
         message = f'Note: IPD last month is calculated by real working days, including Transferred Out.'
     if command == "ipd_this_month":
