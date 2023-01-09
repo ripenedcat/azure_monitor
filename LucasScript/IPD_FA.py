@@ -157,6 +157,10 @@ def get_days_per_command():
 
         month = (today.replace(day=1) - timedelta(days=1)).month
         total_days_of_month = days_of_month(year,month)
+    elif "|" in command:
+        start, end = command.split("|")
+        leave_dict = get_leave_days(command)
+        total_days_of_month = (datetime(end) - datetime(start)).days
     else:
         return []
     logging.info(f'leave_dict = {leave_dict}')
