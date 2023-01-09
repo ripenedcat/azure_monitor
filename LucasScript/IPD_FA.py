@@ -73,6 +73,8 @@ def get_json_result():
         message = f'Note: IPD last month is calculated by real working days, including Transferred Out.'
     if command == "ipd_this_month":
         message = f'Note: IPD this month is calculated from volume by last Sunday, including Transferred Out.'
+    elif "|" in command:
+        message = f'Note: IPD within {command} is calculated from volume by real working days, including Transferred Out.'
     dto = json.dumps({"data":data,"success":success,"message":message})
     logging.info(f"IPD_FA.py: final data = {dto}")
     return dto
