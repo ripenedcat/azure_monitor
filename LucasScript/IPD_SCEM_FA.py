@@ -51,11 +51,13 @@ pd.set_option('display.max_rows', None)
 def get_json_result():
     data = get_markdown4excel()
     success = True
-    message=''
+    message = ' '
     if command == "ipd_last_month":
         message = f'Note: IPD last month is calculated by real working days, including Transferred Out.'
     if command == "ipd_this_month":
         message = f'Note: IPD this month is calculated from volume by last Sunday, including Transferred Out.'
+    elif "|" in command:
+        message = f'Note: IPD within {command} is calculated from volume by real working days, including Transferred Out.'
     dto = json.dumps({"data":data,"success":success,"message":message})
     logging.info(f"IPD_FA.py: final data = {dto}")
     return dto
@@ -145,6 +147,12 @@ def get_days_per_command():
 
         month = (today.replace(day=1) - timedelta(days=1)).month
         total_days_of_month = days_of_month(year,month)
+    elif "|" in command:
+        start_str, end_str = command.split("|")
+        leave_dict = get_leave_days(command)
+        start = datetime.datetime.strptime(start_str,'%Y-%m-%d')
+        end = datetime.datetime.strptime(end_str,'%Y-%m-%d')
+        total_days_of_month = (end - start).days
     else:
         return []
     logging.info(f'leave_dict = {leave_dict}')
