@@ -1,93 +1,101 @@
+
+'''
+从Case Assignment表中获取所有人的credit，不计transfer out.
+根据班表中准确的工作时间来计算IPD
+
+'''
+
 # This is a sample Python script.
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
+import json
+from collections import defaultdict
+from dateutil.relativedelta import relativedelta
 import pandas as pd
-import time
-import datetime
-import json,requests,openpyxl,logging
-from io import BytesIO
+import requests,openpyxl
+import calendar
+from enum import Enum
+from datetime import date, datetime, timedelta
 import tabulate
+import datetime
+import logging
+from io import BytesIO
+global command
+try:
+    command
+except:
+    command = "2022-11-01|2022-11-30"
 
 
+monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
+                 "Niki", "Nina",  "Qianqian",  "Wuhao","Hugh","Sophia","Howard","Jimmy","Lucas","Jason","Wenru","Jingjing","Chunyan"]
+
+monitoring_tw_se = ["Jeff","Cheryl"]
+
+monitoring_au_se = ["Chris", "Nicky"]
 
 
-monitoring_fte = [ 'Anna', "Sophia","Hugh",
-                 "Junsen", "Kelly", "Jason","Wenru",
-                 "Niki", "Nina",  "Qianqian", "Wuhao","Howard","Jimmy",'Arthur',"Lucas","Jingjing","Chunyan"]
-monitoring_vendor = [ "Victor",  "Aristo",
-                 "Jack", "Jerome", "Jiaqi", "Wan","Allen","Tony","Adelaide","Cici","Jack Zhou","Alen","Ivan","Stacy","Cecilia"]
+#all_se = monitoring_fte_se + monitoring_vendor_se
+all_se = monitoring_fte_se  + monitoring_tw_se+monitoring_au_se
 
-monitoring_tw = ['Jeff','Cheryl']
-monitoring_au = ['Chris','Nicky']
-monitoring_scem = ['Tina He']
+name_mapping = {"Nina Li": "Nina", "Maggie Dong": "Maggie", "Anna Gao": "Anna", "Andy Wu": "Andy",
+                "Kelly Zhou": "Kelly",
+                "Wuhao Chen": "Wuhao", "Qianqian Liu": "Qianqian", "Junsen Chen": "Junsen", "Mark He": "Mark",
+                "Hugh Chao": "Hugh",
+                "Sophia Zhang": "Sophia", "Howard Pei": "Howard", "Ji Bian": "Jimmy", "Jimmy Bian":"Jimmy","Niki Jin": "Niki",
+                "Wan Huang": "Wan",
+                "Jack Bian": "Jack", "Jiaqi Deng": "Jiaqi", "Arthur Huang": "Arthur",
+                "Jerome Guan": "Jerome", "Lucas Huang": "Lucas", "Aristo Liao": "Aristo",
+                "Victor Zhang": "Victor", "Guangyu Zhang": "Victor", "Tony Li": "Tony", "Allen Liang": "Allen",
+                "Jason Zhou": "Jason", "Adelaide Wu": "Adelaide", "Xichen Xue": "Cici", "Jack Zhou": "Jack Zhou",
+                "Zheyi Zheng": "Alen", "Wenru Huang": "Wenru", "Ivan Tong": "Ivan", "Jingjing Cai": "Jingjing",
+                "Chunyan Liu": "Chunyan",
 
-all_se = monitoring_fte + monitoring_vendor + monitoring_tw+monitoring_au+monitoring_scem
-
-name_mapping={"Nina Li":"Nina","Maggie Dong":"Maggie","Anna Gao":"Anna","Andy Wu":"Andy","Kelly Zhou":"Kelly","Qi Chen":"Qi",
-              "Wuhao Chen":"Wuhao","Qianqian Liu":"Qianqian","Junsen Chen":"Junsen","Mark He":"Mark","Hugh Chao":"Hugh",
-               "Sophia Zhang":"Sophia","Howard Pei":"Howard","Ji Bian":"Jimmy","Niki Jin":"Niki","Wan Huang":"Wan","Li Zhang":"Li",
-              "Yue Mei":"Edwin","Jeremy Liang":"Jeremy","Jack Bian":"Jack","Jiaqi Deng":"Jiaqi","Arthur Huang":"Arthur",
-              "Jerome Guan":"Jerome","Lucas Huang":"Lucas","Xuanyi Liu":"Xuanyi","Chener Zhang":"Chener","Aristo Liao":"Aristo",
-              "Victor Zhang":"Victor","Guangyu Zhang":"Victor","Tony Li":"Tony","Allen Liang":"Allen","Jason Zhou":"Jason","Adelaide Wu":"Adelaide","Xichen Xue":"Cici","Jack Zhou":"Jack Zhou",
-              "Zheyi Zheng":"Alen","Wenru Huang":"Wenru","Ivan Tong":"Ivan","Jingjing Cai":"Jingjing","Chunyan Liu":"Chunyan",
-              "Stacy Fan":"Stacy","Cecilia Fu":"Cecilia","Cheryl Huang":"Cheryl","Tina He":"Tina He","Jeff Lee":"Jeff","Chris Butrymowicz":"Chris",
-              "Nicky Lian":"Nicky"
+                "Cheryl Huang": "Cheryl", "Jeff Lee": "Jeff",
+                "Nicky Lian": "Nicky", "Chris Butrymowicz": "Chris"}
 
 
+leave_dict = {}
+total_days_of_month =0
+local_debug = True
+downloaded_excel_path = "./CaseAssignment.xlsx" if local_debug else '/tmp/a.xlsx'
 
-}
-
-pd.set_option('display.max_columns', None)
 # 显示所有行
+pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
-new_week_off_dict={}
-# local_debug = True
-# downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
 def get_json_result():
-    try:
-        data = get_markdown4excel()
-        success = True
-        message = f'This is daily credit for {time.strftime("%Y-%m-%d", time.localtime())}.'
-    except Exception as e:
-        success = False
-        data = {}
-        message = f"Something Wrong. {str(e)}."
-    return json.dumps({"data":data,"success":success,"message":message})
+    data = get_markdown4excel()
+    success = True
+    message=' '
+    if command == "ipd_last_month":
+        message = f'Note: IPD last month is calculated by real working days, including Transferred Out.'
+    if command == "ipd_this_month":
+        message = f'Note: IPD this month is calculated from volume by last Sunday, including Transferred Out.'
+    elif "|" in command:
+        message = f'Note: IPD within {command} is calculated from volume by real working days, including Transferred Out.'
+    dto = json.dumps({"data":data,"success":success,"message":message})
+    logging.info(f"IPD_FA.py: final data = {dto}")
+    return dto
 
 def get_markdown4excel():
-    global new_week_off_dict
     print_hi('Script is running, please wait until finish')
-    new_week_off_dict = get_week_off_monitor() | get_week_off_scem()
-    #new_week_off_dict = get_week_off_monitor()
-    #new_week_off_dict = get_week_off_monitor()
-    df_excel = get_excel_data()
-    print(df_excel)
+    begin_date,end_date = get_days_per_command()
+    df_all = get_excel_data(getEveryDay(begin_date,end_date))
+    logging.info(f'df_all = {df_all}')
 
-    check_name(df_excel)
-    df_fte = get_se_data(df_excel, monitoring_fte)
-    print(df_fte)
-    df_vendor = get_se_data(df_excel, monitoring_vendor)
-    print(df_vendor)
-    df_tw = get_se_data(df_excel, monitoring_tw)
-    print(df_tw)
-    df_au = get_se_data(df_excel, monitoring_au)
-    print(df_au)
-    df_scem = get_se_data(df_excel, monitoring_scem)
-    print(df_scem)
-    df_ge = concat_and_sort(df_fte,df_tw,df_au,df_scem )
-    df_vendor = concat_and_sort(df_vendor)
-    return df_ge.to_markdown(stralign="center",numalign="center")+"place_to_split"+df_vendor.to_markdown(stralign="center",numalign="center")
+
+    return df_all.to_markdown(stralign="center",numalign="center")
+
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    logging.info(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
-def get_week_off_monitor():
+def get_leave_days(cmd):
     url = "https://botcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
-    payload = json.dumps({"date_list":["123"],"command":"week_until_today",'target_team':'monitor'})
+    payload = json.dumps({"date_list":[],"command":cmd,'target_team':'monitor'})
     response = requests.post(url, data=payload)
     week_off_dict = json.loads(response.text)
     new_week_off_dict = {}
@@ -96,135 +104,159 @@ def get_week_off_monitor():
             name = name_mapping[k]
             if name in all_se:
                 new_week_off_dict[name]=v
-    logging.info(f"monitor off dict = {new_week_off_dict}")
     return new_week_off_dict
-def get_week_off_scem():
-    url = "https://botcheckresourceschedule.azurewebsites.net/api/LucasFunctionAppAnalyzeResourceScheduleHTTPTrigger"
-    payload = json.dumps({"date_list":["123"],"command":"week_until_today",'target_team':'scem'})
-    response = requests.post(url, data=payload)
-    week_off_dict = json.loads(response.text)
-    new_week_off_dict = {}
-    for k,v in week_off_dict.items():
-        if k in name_mapping.keys():
-            name = name_mapping[k]
-            if name in all_se:
-                new_week_off_dict[name]=v
-    logging.info(f"scem off dict = {new_week_off_dict}")
-    return new_week_off_dict
+
+def days_of_month(year, month):
+    """
+    给定年份和月份返回这个月有多少天
+    :param year:
+    :param month:
+    :return:
+    """
+    return calendar.monthrange(year, month)[1]
+
+def getEveryDay(begin_date,end_date):
+    date_list = []
+
+    while begin_date <= end_date:
+        date_str = begin_date.strftime("%Y-%m-%d")
+        date_list.append(date_str)
+        begin_date += datetime.timedelta(days=1)
+    return date_list
+
+
+def get_days_per_command():
+    '''
+    根据输入的指令，获取日期list
+    :return:
+    '''
+    global leave_dict,total_days_of_month
+    today = date.today()
+    year = today.year
+    logging.info(f"IPD_FA.py command in script = {command}")
+
+    if command == "ipd_this_month":
+        last_day_of_this_month = today.replace(day=1) + relativedelta(months=1) - timedelta(days=1)
+        start_day_of_this_month = today.replace(day=1)
+        start, end = start_day_of_this_month,last_day_of_this_month
+        leave_dict = get_leave_days("this_month")
+        now = date.today()
+        last_week_start = now - timedelta(days=now.weekday() + 7)
+        last_week_end = now - timedelta(days=now.weekday() + 1)
+        if last_week_end.month != now.month:
+            return []
+        start = today.replace(day=1)
+        end = last_week_end
+        total_days_of_month = today.day
+
+
+    elif command == "ipd_last_month":
+
+        last_day_of_prev_month = today.replace(day=1) - timedelta(days=1)
+        start_day_of_prev_month = today.replace(day=1) - timedelta(days=last_day_of_prev_month.day)
+        start, end = start_day_of_prev_month,last_day_of_prev_month
+        leave_dict = get_leave_days("last_month")
+
+        month = (today.replace(day=1) - timedelta(days=1)).month
+        total_days_of_month = days_of_month(year,month)
+    elif "|" in command:
+        start_str, end_str = command.split("|")
+        leave_dict = get_leave_days(command)
+        start = datetime.datetime.strptime(start_str,'%Y-%m-%d')
+        end = datetime.datetime.strptime(end_str,'%Y-%m-%d')
+        total_days_of_month = (end - start).days
+    else:
+        return []
+    logging.info(f'leave_dict = {leave_dict}')
+    logging.info(f"start = {start},end = {end}")
+    return start,end
 # Press the green button in the gutter to run the script.
-def get_excel_data():
-
+def get_excel_data(date_list):
 
     # 读取工作簿和工作簿中的工作表
-    response = requests.get('https://prod-00.eastus.logic.azure.com:443/workflows/764229174611433581f584080a1c15c1/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CekobRDm-H9Dx-tBTpXOblRXrJqihxBoTeCyilDCi2w')
-    excel_response = requests.get("https://lucasstorageaccount.blob.core.windows.net/token/Monitoring Today's Cases and Credit This Week.xlsx")
+    # df_backlog = pd.read_excel(backlog_excel,engine='openpyxl')
+    # df_backlog = df_backlog.dropna(axis=1, how='all')
+    # df_backlog = df_backlog[["Names","Cases","All Items"]]
+
+
+    # 获取在线case assignemnt
+    response = requests.get("https://prod-25.eastus.logic.azure.com:443/workflows/377e11f2f61646f7832bbf9623dfa0df/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=OzigXT86xZbL_qS9q4hrY4zw0DU3Hld8NEGxkuyFlTo")
+    excel_response = requests.get(
+        "https://lucasstorageaccount.blob.core.windows.net/token/CaseAssignment.xlsx")
     excel_response = excel_response.content
-    # with open(downloaded_excel_path,'wb') as f:
+    # with open(downloaded_excel_path, 'wb') as f:
     #     f.write(excel_response)
     excel_binary = openpyxl.load_workbook(filename=BytesIO(excel_response),data_only=True)
-    df = pd.read_excel(excel_binary,
-                       sheet_name='Case this week',engine='openpyxl')
+
+    case_excel = excel_binary
+    df_monitoring_case = pd.read_excel(case_excel,sheet_name='Azure Monitoring',engine='openpyxl')
+    df_monitoring_case = df_monitoring_case.dropna(axis=1, how='all')
+    df_monitoring_case = df_monitoring_case.loc[df_monitoring_case['Date'].isin(date_list)]
+    logging.info("------------df_monitoring_case=-------------")
+
+    #print(df_monitoring_case)
+
     # 新建一个工作簿
-    df = df.dropna(axis=0, how='all')
-    #df = df.dropna(axis=1, how='all')
-    return df
-
-
-def get_se_data(df_excel,monitoring_se):
-    d = time.localtime()
-
-    weekday_shift = time.strftime("%w", d)
-    weekday_shift = int(weekday_shift)
-    if weekday_shift==0:
-        weekday_shift=7
-    today = time.strftime("%Y-%m-%d", d)
-    print("today:",today)
-    print("weekday_shift = ",weekday_shift)
-
-    ret = pd.DataFrame(columns=['workdays', 'case today', 'task today',
-                                "active case this week", "active task this week",
-                                "active credit per day", "transferred out case", "transferred out task"],
-                       index=monitoring_se)
+    ret = pd.DataFrame(columns=['Case Volume', 'Collaboration Task Volume',"Outage Volume", "Total" , "Working days","Daily Volume"],
+                       index=all_se)
     ret.loc[:, :] = 0
-    ret.loc[:, "workdays"] = weekday_shift
-    for se in monitoring_se:
-        # workdays
-        #ret.loc[se, "workdays"] -= off_days[se]
-        if se in new_week_off_dict.keys():
-            ret.loc[se, "workdays"] = ret.loc[se, "workdays"]*1.0 - new_week_off_dict[se]
+
+    for se in all_se:
+        logging.info(f" ------------- {se}-----------------")
+        # if se in integration_se:
+        #     df_case = df_integration_case
+        # else:
+        df_case = df_monitoring_case
+
         # case this week
-        temp_df_case_this_week = df_excel[df_excel['Case/Task'].astype(str).str.contains("Case")]
+        temp_df_case_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("case")]
+        temp_df_case_this_week = temp_df_case_this_week[~temp_df_case_this_week['Is Outage?'].astype(str).str.lower().str.contains("y")]
         temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case owner"].str.strip() == se]
-        ret.loc[se, "active case this week"] = temp_df_case_this_week.shape[0]
-        # task this week
-        temp_df_task_this_week = df_excel[df_excel['Case/Task'].astype(str).str.contains("Task")]
-        temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case owner"].astype(str).str.strip() == se]
-        ret.loc[se, "active task this week"] = temp_df_task_this_week.shape[0]
-        # case today
-        # temp_df_case_today = df_excel[df_excel['Case/Task'].str.contains("Case")]
-        # temp_df_case_today = temp_df_case_today[temp_df_case_today["Weekday Shift"] == weekday_shift]
-        # temp_df_case_today = temp_df_case_today[temp_df_case_today["Case owner"] == se]
-        temp_df_case_today = df_excel[df_excel['Case/Task'].astype(str).str.contains("Case")]
-        temp_df_case_today = temp_df_case_today[temp_df_case_today["Date"] == today]
-        temp_df_case_today = temp_df_case_today[temp_df_case_today["Case owner"].astype(str).str.strip() == se]
-        ret.loc[se, "case today"] = temp_df_case_today.shape[0]
-        # task today
-        # temp_df_task_today = df_excel[df_excel['Case/Task'].str.contains("Task")]
-        # temp_df_task_today = temp_df_task_today[temp_df_task_today["Weekday Shift"] == weekday_shift]
-        # temp_df_task_today = temp_df_task_today[temp_df_task_today["Case owner"] == se]
-        temp_df_task_today = df_excel[df_excel['Case/Task'].astype(str).str.contains("Task")]
-        temp_df_task_today = temp_df_task_today[temp_df_task_today["Date"] == today]
-        temp_df_task_today = temp_df_task_today[temp_df_task_today["Case owner"].astype(str).str.strip() == se]
-        ret.loc[se, "task today"] = temp_df_task_today.shape[0]
-        # transfer out case
-        temp_df_transfer_out_case = df_excel[df_excel['Case/Task'].str.contains("Case")]
-        temp_df_transfer_out_case = temp_df_transfer_out_case[temp_df_transfer_out_case["Case owner"].astype(str).str.strip() == se]
-        temp_df_transfer_out_case = temp_df_transfer_out_case[temp_df_transfer_out_case["Transfer Out?"].astype(str).str.lower().str.contains("y",na=False)]
-        ret.loc[se, "transferred out case"] = temp_df_transfer_out_case.shape[0]
-        ##transfer out task
-        temp_df_transfer_out_task = df_excel[df_excel['Case/Task'].str.contains("Task")]
-        temp_df_transfer_out_task = temp_df_transfer_out_task[temp_df_transfer_out_task["Case owner"].astype(str).str.strip() == se]
-        temp_df_transfer_out_task = temp_df_transfer_out_task[temp_df_transfer_out_task["Transfer Out?"].astype(str).str.lower().str.contains("y",na=False)]
-        ret.loc[se, "transferred out task"] = temp_df_transfer_out_task.shape[0]
-        # minus transfer out
-        ret.loc[se, "active case this week"] -= ret.loc[se, "transferred out case"]
-        ret.loc[se, "active task this week"] -= ret.loc[se, "transferred out task"]
-        # credit
-        if ret.loc[se, "workdays"] == 0:
-            ret.loc[se, "active credit per day"] = 0
+        ret.loc[se, "Case Volume"] = temp_df_case_this_week.shape[0]
+        # collab this week
+        temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("collab")]
+        temp_df_task_this_week = temp_df_task_this_week[~temp_df_task_this_week['Is Outage?'].astype(str).str.lower().str.contains("y")]
+        temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case owner"].str.strip() == se]
+        ret.loc[se, "Collaboration Task Volume"] = temp_df_task_this_week.shape[0]
+
+        #Outage
+        temp_df_outage_this_week = df_case[df_case['Is Outage?'].astype(str).str.lower().str.contains("y")]
+        temp_df_outage_this_week = temp_df_outage_this_week[temp_df_outage_this_week["Case owner"].astype(str).str.strip() == se]
+        ret.loc[se, "Outage Volume"] = temp_df_outage_this_week.shape[0]
+
+        # weekly total
+        ret.loc[se, "Total"] = ret.loc[se, "Case Volume"]+ ret.loc[se, "Collaboration Task Volume"] + ret.loc[se, "Outage Volume"]
+
+
+
+        #working days
+
+        if se in leave_dict:
+            ret.loc[se, "Working days"] = total_days_of_month - leave_dict[se]
         else:
-            ret.loc[se, "active credit per day"] = (ret.loc[se, "active case this week"] +
-                                                    ret.loc[se, "active task this week"] * 0.5) / ret.loc[
-                                                       se, "workdays"]
-    ret.sort_values("case today", ascending=False, inplace=True)
-    ret.sort_values("workdays", ascending=False, inplace=True)
-    ret.sort_values("active credit per day", ascending=False, inplace=True)
-    ret = ret.drop(columns= ["transferred out case", "transferred out task"])
+            ret.loc[se, "Working days"] = 0
+        if ret.loc[se, "Working days"] != 0:
+            ret.loc[se, "Daily Volume"] =  (ret.loc[se, "Case Volume"]+ ret.loc[se, "Collaboration Task Volume"]+ ret.loc[se, "Outage Volume"]*0.33)/ ret.loc[se, "Working days"]
+        else:
+            ret.loc[se, "Daily Volume"] =  0
+
+
+
+
+    ret.sort_values(["Daily Volume","Total"], ascending= (False,False),
+                                   inplace=True)
+
+
+
     return ret
 
 
 
-def concat_and_sort(*iterables):
-    df_all=pd.concat(iterables)
-    sum_case_today = df_all["case today"].sum()
-    sum_task_today = df_all["task today"].sum()
-    sum_active_case_this_week = df_all["active case this week"].sum()
-    sum_active_task_this_week = df_all["active task this week"].sum()
-    df_all.loc["Total"] = ""
-    df_all.loc["Total", "case today"] = sum_case_today
-    df_all.loc["Total", "task today"] = sum_task_today
-    df_all.loc["Total", "active case this week"] = sum_active_case_this_week
-    df_all.loc["Total", "active task this week"] = sum_active_task_this_week
-    return df_all
-
-
-
-def check_name(df_excel):
-    pass
 
 if __name__=="__main__":
     logging.getLogger().setLevel(logging.INFO)
     print(get_markdown4excel())
 
-
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
