@@ -25,13 +25,13 @@ global command
 try:
     command
 except:
-    command = "2022-11-01|2022-11-30"
+    command = "ipd_last_month"
 
 
 monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
                  "Niki", "Nina",  "Qianqian",  "Wuhao","Hugh","Sophia","Howard","Jimmy","Lucas","Jason","Wenru","Jingjing","Chunyan"]
 
-monitoring_tw_se = ["Jeff","Tina","Cheryl"]
+monitoring_tw_se = ["Jeff","Cheryl"]
 
 monitoring_au_se = ["Chris", "Nicky"]
 
@@ -40,7 +40,7 @@ monitoring_au_se = ["Chris", "Nicky"]
 all_se = monitoring_fte_se  + monitoring_tw_se+monitoring_au_se
 
 name_mapping = {"Nina Li": "Nina", "Maggie Dong": "Maggie", "Anna Gao": "Anna", "Andy Wu": "Andy",
-                "Kelly Zhou": "Kelly", 
+                "Kelly Zhou": "Kelly",
                 "Wuhao Chen": "Wuhao", "Qianqian Liu": "Qianqian", "Junsen Chen": "Junsen", "Mark He": "Mark",
                 "Hugh Chao": "Hugh",
                 "Sophia Zhang": "Sophia", "Howard Pei": "Howard", "Ji Bian": "Jimmy", "Jimmy Bian":"Jimmy","Niki Jin": "Niki",
