@@ -15,9 +15,9 @@ Role=1
 name_role_mapping={"Anna":["Anna Gao","SME"],"Sophia":["Sophia Zhang","SE"],"Hugh":["Hugh Chao","SE"],"Junsen":["Junsen Chen","SME"],"Kelly":["Kelly Zhou","TA"],
                    "Jason":["Jason Zhou","SE"],"Nina":["Nina Li","EE"],"Qianqian":["Qianqian Liu","SME"],"Wuhao":["Wuhao Chen","SME"],"Howard":["Howard Pei","SE"],"Jimmy":["Ji Bian","SE"],
                    "Arthur":["Arthur Huang","SE"],"Lucas":["Lucas Huang","SE"],
-                   "Chris":["Chris Butrymowicz","AU SE(cap 1)"],"Nicky":["Nicky Lian","AU SE(cap 1)"],
-                   "Tina":["Tina Su","TW SE(cap 1)"],"Cheryl":["Cheryl Huang","TW SE(cap 1)"],"Jeff":["Jeff Lee","TW SE"],
-                   "Wenru":["Wenru Huang","CSG(cap 1)"],"Jingjing":["Jingjing Cai","New Hire(cap 1)"],"Chunyan":["Chunyan Liu","New Hire(cap 1)"]}
+                   "Chris":["Chris Butrymowicz","AU SE"],"Nicky":["Nicky Lian","AU SE"],
+                   "Cheryl":["Cheryl Huang","TW SE(cap 1)"],"Jeff":["Jeff Lee","TW SE"],
+                   "Wenru":["Wenru Huang","CSG"],"Jingjing":["Jingjing Cai","SE"],"Chunyan":["Chunyan Liu","SE"]}
 
 pd.set_option('display.max_columns', None)
 # 显示所有行
