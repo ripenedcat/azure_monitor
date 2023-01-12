@@ -40,7 +40,7 @@ monitoring_au_se = ["Chris", "Nicky"]
 all_se = monitoring_fte_se  + monitoring_tw_se+monitoring_au_se
 
 name_mapping = {"Nina Li": "Nina", "Maggie Dong": "Maggie", "Anna Gao": "Anna", "Andy Wu": "Andy",
-                "Kelly Zhou": "Kelly", "Qi Chen": "Qi",
+                "Kelly Zhou": "Kelly", 
                 "Wuhao Chen": "Wuhao", "Qianqian Liu": "Qianqian", "Junsen Chen": "Junsen", "Mark He": "Mark",
                 "Hugh Chao": "Hugh",
                 "Sophia Zhang": "Sophia", "Howard Pei": "Howard", "Ji Bian": "Jimmy", "Jimmy Bian":"Jimmy","Niki Jin": "Niki",
@@ -52,7 +52,7 @@ name_mapping = {"Nina Li": "Nina", "Maggie Dong": "Maggie", "Anna Gao": "Anna", 
                 "Zheyi Zheng": "Alen", "Wenru Huang": "Wenru", "Ivan Tong": "Ivan", "Jingjing Cai": "Jingjing",
                 "Chunyan Liu": "Chunyan",
 
-                "Cheryl Huang": "Cheryl", "Tina Su": "Tina", "Jeff Lee": "Jeff",
+                "Cheryl Huang": "Cheryl", "Jeff Lee": "Jeff",
                 "Nicky Lian": "Nicky", "Chris Butrymowicz": "Chris"}
 
 
