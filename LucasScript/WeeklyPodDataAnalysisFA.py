@@ -320,20 +320,20 @@ def get_excel_data(fw):
 
         # case this week
         temp_df_case_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("case")]
-        temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case owner"].str.strip() == se]
+        temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Case Volumn"] = temp_df_case_this_week.shape[0]
         # collab this week
         temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("collab")]
-        temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case owner"].str.strip() == se]
+        temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Collaboration Task Volume"] = temp_df_task_this_week.shape[0]
 
         # Follow-up this week
         temp_df_followup_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("follow")]
-        temp_df_followup_task_this_week = temp_df_followup_task_this_week[temp_df_followup_task_this_week["Case owner"].str.strip() == se]
+        temp_df_followup_task_this_week = temp_df_followup_task_this_week[temp_df_followup_task_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Follow-up Task Volume"] = temp_df_followup_task_this_week.shape[0]
         # Rave this week
         temp_df_rave_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("rave")]
-        temp_df_rave_task_this_week = temp_df_rave_task_this_week[temp_df_rave_task_this_week["Case owner"].str.strip() == se]
+        temp_df_rave_task_this_week = temp_df_rave_task_this_week[temp_df_rave_task_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Rave AR"] = temp_df_rave_task_this_week.shape[0]
         # weekly total
         ret.loc[se, "Weekly Total"] = ret.loc[se, "Case Volumn"]+ret.loc[se, "Follow-up Task Volume"] \
