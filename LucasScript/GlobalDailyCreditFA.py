@@ -35,9 +35,14 @@ local_debug = True
 downloaded_excel_path = "./Monitoring Today's Cases and Credit This Week.xlsx" if local_debug else '/tmp/a.xlsx'
 
 def get_json_result():
-    data = get_markdown4excel()
-    success = True
-    message = f'This is global daily credit for {time.strftime("%Y-%m-%d", time.localtime())}.'
+    try:
+        data = get_markdown4excel()
+        success = True
+        message = f'This is global daily credit for {time.strftime("%Y-%m-%d", time.localtime())}.'
+    except Exception as e:
+        data = ""
+        success=False
+        message = str(e)
     return json.dumps({"data":data,"success":success,"message":message})
 
 def get_markdown4excel():
