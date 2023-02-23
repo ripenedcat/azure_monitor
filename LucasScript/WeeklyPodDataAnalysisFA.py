@@ -38,7 +38,7 @@ except:
     #自动计算财年开始日期
     if fiscal_year_start > today:
         fiscal_year_start = fiscal_year_start.replace(year=today.year - 1)
-    gl_fw =week_in_fiscal_year(today, fiscal_year_start)
+    gl_fw =week_in_fiscal_year(today, fiscal_year_start)-1
 
     logging.info(f"path of gl_fw not set. Using defalut {gl_fw}")
 
@@ -59,49 +59,34 @@ except:
 
 
 monitoring_vendor_se = [
-                 "Jack", "Jerome", "Jiaqi",  "Wan", "Aristo","Victor","Allen","Tony","Adelaide","Cici","Jack Zhou","Alen","Ivan",
-                "Stacy","Cecilia"]
+                 "Jack Bian", "Jerome Guan", "Jiaqi Deng",  "Wan Huang", "Aristo Liao","Victor Zhang","Allen Liang","Tony Li","Adelaide Wu","Cici Xue","Jack Zhou","Alen Zheng","Ivan Tong",
+                "Stacy Fan","Cecilia Fu"]
 
-monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
-                 "Niki", "Nina",  "Qianqian",  "Wuhao","Hugh","Sophia","Howard","Jimmy","Lucas","Jason","Wenru","Jingjing","Chunyan"]
+monitoring_fte_se = ['Arthur Huang', 'Anna Gao',   "Junsen Chen", "Kelly Zhou",
+                 "Niki Jin", "Nina Li",  "Qianqian Liu",  "Wuhao Chen","Hugh Chao","Sophia Zhang","Howard Pei","Ji Bian","Lucas Huang","Jason Zhou","Wenru Huang","Jingjing Cai","Chunyan Liu"]
 
-monitoring_tw_se = ["Jeff","Cheryl"]
+monitoring_tw_se = ["Jeff Lee","Cheryl Huang"]
 
-monitoring_au_se = ["Chris", "Nicky"]
+monitoring_au_se = ["Chris Butrymowicz", "Nicky Lian"]
 
-integration_se = ["yuzhang6","yuaf","jiecao","zhangz","qili7","v-haoshe","jiaqitong","wenbi","wjzhang","yanden","yinshi","huidongliu","beixiao"
-                  ]
+
 
 #all_se = monitoring_fte_se + monitoring_vendor_se
 all_se = monitoring_fte_se + monitoring_vendor_se + monitoring_tw_se+monitoring_au_se
 
-# possible_names = {"Andy":["Andy Wu","Hao Wu","Andy W"],"Anna":["Xue Gao","Xue G"],"Bruno":["Bruno L","Bruno Liu"],"Hugh":["Hui C","Hui Chao","Hugh C","Hugh Chao"],"Junsen":["Junsen C","Junsen Chen"],
-#                  "Kelly":["Yinan Zhou","Yinan Z","Kelly Zhou","Kelly Z"],"Qianqian":["Qianqian L","Qianqian l","Qianqian Liu"],"Maggie":["Meijiao Dong","Maggie D"],
-#                  "Mark":["Xiaowei He","Xiaowei H","Mark He","Mark H"],"Nina":["Na L","Nina Li"],"Qi":["Qi C","Qi Chen"],"Sophia":["Sophia Z","Sophia Zhang"],"Arthur":["Arthur Huang","Arthur H"],
-#                  "Jack":["Jack Bian","Jack B"],"Jeremy":["Jeremy Liang"],"Jerome":["Junhao Guan","Junhao G","Jerome G","Jerome Guan"],"Jiaqi":["Jiaqi Deng","Jiaqi D"],"Li":["Li Zhang"],
-#                  "Wan":["Treasure Huang","Treasure H","Wan Huang","Wan H"],"Edwin":["Edwin Mei","Edwin M"],"Lucas":["Zixin H","Lucas H","Lucas Huang","Zixin Huang"],"Wuhao":["Wuhao Chen","Wuhao C"],
-#                  "Xuanyi":["Xuanyi L"],"Niki":["Yan J","Yan Jin","Niki Jin","Niki J"],"Howard":["Howard P","Howard Pei"],"Jimmy":["Ji B","Ji Bian"],"Chener":["Chener Zhang","Chener Z"],
-#                   "Aristo":["Fang L","Fang Liao"],"Victor":["Guangyu Zhang","Guangyu Z"],"Jason":["Jason Zhou","Jason Z","Sheng Zhou","Sheng Z"],"Allen":["Zhaonian Liang","Zhaonian L"],"Tony":["Tianyu Li","Tianyu L"],
-#                   "yuzhang6":["Yu Zhang","Yu Z"],"v-haoshe":["Haozhou Shen","Haozhou S"],"jiaqitong":["Jiaqi T"],"jiecao":["Jie Cao","Jie C"],"qili7":["Qing L"],
-#                   "wjzhang":["Wen-Jun Zhang","Wen-Jun Z"],"wenbi":["Wenzhe Bi","Wenzhe B"],"yanden":["Yanbo Deng","Yanbo D"],"yinshi":["Yingjie Shi","Yingjie S"],
-#                   "yuaf":["Yuanchang F"],"zhangz":["Ziyu Z"],"huidongliu":["Huidong Liu","Huidong L"],"beixiao":["Bei Xiao","Bei X"],"Adelaide":["Lingjie Wu","Lingjie W"],"Cici":["Cici Xue","Cici X"],
-#                   "Jack Zhou":["Jack Zhou","Jack Z"],"Alen":["Zheyi Zheng","Zheyi Z","Alen Zheng","Alen Z"],"Chunyan":["Chunyan Liu","Chunyan L"],"Jingjing":["Jingjing Cai","Jingjing C"],"Phoebe":["Phoebe Wan","Phoebe W"],
-#                   "Wenru":["Wenru Huang","Wenru H"],"Ivan":["Ivan Tong","Ivan T","Chen Tong","Chen T"],
-#                     "Jeff":["Jeff Lee","Jeff L"],"Tina":["Tina Su","Tina S"],"Cheryl":["Cheryl Huang","Cheryl H"],
-#                   "Chris":["Chris B","Chris Butrymowicz"],"Nicky":["Nicky L","Nicky Lian"]
 #                  }
 #to do: 不要自动获取alias,手写算了
-name_alias_mapping = { 'Arthur':"arthurhuang", 'Anna':"xuegao",   "Junsen":"junsche", "Kelly":"yinazhou","Niki":"yanj", "Nina":"nali2",
-                       "Qianqian":"liqianqi",  "Wuhao":"wuhchen","Hugh":"huichao","Sophia":"yiqianzhang","Howard":"howardpei","Jimmy":"bianji","Lucas":"lucashuang",
-                       "Jason":"shengzhou","Wenru":"v-wenruhuang","Jingjing":"jingjingcai","Chunyan":"chunyanliu" ,
+name_alias_mapping = { 'Arthur Huang':"arthurhuang", 'Anna Gao':"xuegao",   "Junsen Chen":"junsche", "Kelly Zhou":"yinazhou","Niki Jin":"yanj", "Nina Li":"nali2",
+                       "Qianqian Liu":"liqianqi",  "Wuhao Chen":"wuhchen","Hugh Chao":"huichao","Sophia Zhang":"yiqianzhang","Howard Pei":"howardpei","Ji Bian":"bianji","Lucas Huang":"lucashuang",
+                       "Jason Zhou":"shengzhou","Wenru Huang":"v-wenruhuang","Jingjing Cai":"jingjingcai","Chunyan Liu":"chunyanliu" ,
 
-                        "Jeff":"leejeff","Tina":"tins","Cheryl":"yahua",
+                        "Jeff Lee":"leejeff","Cheryl Huang":"yahua",
 
-                        "Chris":"cbutrymowicz", "Nicky":"nickylian",
+                        "Chris Butrymowicz":"cbutrymowicz", "Nicky Lian":"nickylian",
 
-                        "Jack":"v-jacbia", "Jerome":"v-junhaoguan", "Jiaqi":"v-jiaqde",  "Wan":"v-trhuan", "Aristo":"v-fangliao","Victor":"v-guanzhang",
-                       "Allen":"v-zhliang","Tony":"v-litiany","Adelaide":"v-lingjiewu","Cici":"v-xichenxue","Jack Zhou":"v-jingkzhou","Alen":"v-zheyizheng","Ivan":"v-chentong",
-                       "Stacy":"v-fanxia","Cecilia":"v-chuyifu"
+                        "Jack Bian":"v-jacbia", "Jerome Guan":"v-junhaoguan", "Jiaqi Deng":"v-jiaqde",  "Wan Huang":"v-trhuan", "Aristo Liao":"v-fangliao","Victor Zhang":"v-guanzhang",
+                       "Allen Liang":"v-zhliang","Tony Li":"v-litiany","Adelaide Wu":"v-lingjiewu","Cici Xue":"v-xichenxue","Jack Zhou":"v-jingkzhou","Alen Zheng":"v-zheyizheng","Ivan Tong":"v-chentong",
+                       "Stacy Fan":"v-fanxia","Cecilia Fu":"v-chuyifu"
                        }
 
 QueryforAllSEOpeningCases_jsonMapper = Enum('QueryforAllSEOpeningCases_jsonMapper', ( 'CaseNumber','AgentId','AgentIdUpdatedOn','AssignedTo','Severity','CaseType','State','taskId','StateAnnotation','StateAnnotationLastUpdatedOn','CreatedOn','CaseCreatedOn','CreationChannel','CustomerProgramPriority','CustomerProgramType','UpdatedOn','LastEmailInteractionCreatedOn','StateLastUpdatedOn','AgentIdAssignedCount','supportTimeZone','supportLanguage','supportCountry','Is24x7optedin','Customers','Title','IncidentId','isIncidentServiceImpactingEvent','IsCritSit','RestrictedAccess','InternalTitle','AssignmentPending','UpdatedBy','Description','IssueContext','IssueDescription','ActiveSystem','CaseActiveSystem','CaseTaskUri','CaseUri','BlockedBy','taskStartsOn','taskEndsOn','caseTaskSAP','Causes','Path','QueueName','CaseAge','Duration','SlaExpiresOn','SlaCompletedOn','SlaState','FCRTarget','FCRState','FCRKpiType','FDRTarget','FDRState','FDRKpiType','servicelevel','EntitlementDescription','EntitlementId','ServiceName','IsPublicSector','PolicyCaseType','unreadEmailsCount','LastInboundCustomerEmail'))
