@@ -63,7 +63,7 @@ monitoring_vendor_se = [
                 "Stacy Fan","Cecilia Fu"]
 
 monitoring_fte_se = ['Arthur Huang', 'Anna Gao',   "Junsen Chen", "Kelly Zhou",
-                 "Niki Jin", "Nina Li",  "Qianqian Liu",  "Wuhao Chen","Hugh Chao","Sophia Zhang","Howard Pei","Ji Bian","Lucas Huang","Jason Zhou","Wenru Huang","Jingjing Cai","Chunyan Liu"]
+                 "Niki Jin", "Nina Li",  "Qianqian Liu",  "Wuhao Chen","Hugh Chao","Sophia ZHANG","Howard Pei","Ji Bian","Lucas Huang","Jason Zhou","Wenru Huang","Jingjing Cai","Chunyan Liu"]
 
 monitoring_tw_se = ["Jeff Lee","Cheryl Huang"]
 
