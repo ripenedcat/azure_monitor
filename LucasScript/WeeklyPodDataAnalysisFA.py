@@ -38,7 +38,7 @@ except:
     #自动计算财年开始日期
     if fiscal_year_start > today:
         fiscal_year_start = fiscal_year_start.replace(year=today.year - 1)
-    gl_fw =week_in_fiscal_year(today, fiscal_year_start)-1
+    gl_fw =week_in_fiscal_year(today, fiscal_year_start)
 
     logging.info(f"path of gl_fw not set. Using defalut {gl_fw}")
 
@@ -265,7 +265,7 @@ def get_excel_data(fw):
 
     # general collab volumn
     temp_df_monitoring_collab_this_week = df_monitoring_case[
-        df_monitoring_case['Case/Task'].str.lower().str.contains("collab")]
+        df_monitoring_case['Case/Task'].str.lower().str.contains("task")]
     ret_general.loc[0, "Collaboration Task Volume"] = temp_df_monitoring_collab_this_week.shape[0]
 
     # temp_df_integration_collab_this_week = df_integration_case[
@@ -308,7 +308,7 @@ def get_excel_data(fw):
         temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Case Volumn"] = temp_df_case_this_week.shape[0]
         # collab this week
-        temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("collab")]
+        temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("task")]
         temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Collaboration Task Volume"] = temp_df_task_this_week.shape[0]
 
