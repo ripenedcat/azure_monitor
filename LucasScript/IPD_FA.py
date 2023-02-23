@@ -28,12 +28,12 @@ except:
     command = "ipd_last_month"
 
 
-monitoring_fte_se = ['Arthur', 'Anna',   "Junsen", "Kelly",
-                 "Niki", "Nina",  "Qianqian",  "Wuhao","Hugh","Sophia","Howard","Jimmy","Lucas","Jason","Wenru","Jingjing","Chunyan"]
+monitoring_fte_se = ['Arthur Huang', 'Anna Gao',   "Junsen Chen", "Kelly Zhou",
+                 "Niki Jin", "Nina Li",  "Qianqian Liu",  "Wuhao Chen","Hugh Chao","Sophia ZHANG","Howard Pei","Ji Bian","Lucas Huang","Jason Zhou","Wenru Huang","Jingjing Cai","Chunyan Liu"]
 
-monitoring_tw_se = ["Jeff","Cheryl"]
+monitoring_tw_se = ["Jeff Lee","Cheryl Huang"]
 
-monitoring_au_se = ["Chris", "Nicky"]
+monitoring_au_se = ["Chris Butrymowicz", "Nicky Lian"]
 
 
 #all_se = monitoring_fte_se + monitoring_vendor_se
@@ -100,10 +100,8 @@ def get_leave_days(cmd):
     week_off_dict = json.loads(response.text)
     new_week_off_dict = {}
     for k,v in week_off_dict.items():
-        if k in name_mapping.keys():
-            name = name_mapping[k]
-            if name in all_se:
-                new_week_off_dict[name]=v
+        if k in all_se:
+            new_week_off_dict[k]=v
     return new_week_off_dict
 
 def days_of_month(year, month):
@@ -214,7 +212,7 @@ def get_excel_data(date_list):
         temp_df_case_this_week = temp_df_case_this_week[temp_df_case_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Case Volume"] = temp_df_case_this_week.shape[0]
         # collab this week
-        temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("collab")]
+        temp_df_task_this_week = df_case[df_case['Case/Task'].str.lower().str.contains("task")]
         temp_df_task_this_week = temp_df_task_this_week[~temp_df_task_this_week['Is Outage?'].astype(str).str.lower().str.contains("y")]
         temp_df_task_this_week = temp_df_task_this_week[temp_df_task_this_week["Case Owner"].str.strip() == se]
         ret.loc[se, "Collaboration Task Volume"] = temp_df_task_this_week.shape[0]
