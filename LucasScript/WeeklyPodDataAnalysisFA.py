@@ -24,6 +24,8 @@ except:
     NEXT_MONDAY = relativedelta.relativedelta(weekday=relativedelta.MO)
     LAST_MONDAY = relativedelta.relativedelta(weekday=relativedelta.MO(-1))
     ONE_WEEK = timedelta(weeks=1)
+
+
     def week_in_fiscal_year(d: date, fiscal_year_start: date) -> int:
         fy_week_2_monday = fiscal_year_start + NEXT_MONDAY
         if d < fy_week_2_monday:
@@ -35,10 +37,10 @@ except:
 
     today = date.today()
     fiscal_year_start = date(today.year, 7, 1)
-    #自动计算财年开始日期
+    # 自动计算财年开始日期
     if fiscal_year_start > today:
         fiscal_year_start = fiscal_year_start.replace(year=today.year - 1)
-    gl_fw =week_in_fiscal_year(today, fiscal_year_start)
+    gl_fw = week_in_fiscal_year(today, fiscal_year_start)
 
     logging.info(f"path of gl_fw not set. Using defalut {gl_fw}")
 
@@ -77,7 +79,7 @@ all_se = monitoring_fte_se + monitoring_vendor_se + monitoring_tw_se+monitoring_
 #                  }
 #to do: 不要自动获取alias,手写算了
 name_alias_mapping = { 'Arthur Huang':"arthurhuang", 'Anna Gao':"xuegao",   "Junsen Chen":"junsche", "Kelly Zhou":"yinazhou","Niki Jin":"yanj", "Nina Li":"nali2",
-                       "Qianqian Liu":"liqianqi",  "Wuhao Chen":"wuhchen","Hugh Chao":"huichao","Sophia Zhang":"yiqianzhang","Howard Pei":"howardpei","Ji Bian":"bianji","Lucas Huang":"lucashuang",
+                       "Qianqian Liu":"liqianqi",  "Wuhao Chen":"wuhchen","Hugh Chao":"huichao","Sophia ZHANG":"yiqianzhang","Howard Pei":"howardpei","Ji Bian":"bianji","Lucas Huang":"lucashuang",
                        "Jason Zhou":"shengzhou","Wenru Huang":"v-wenruhuang","Jingjing Cai":"jingjingcai","Chunyan Liu":"chunyanliu" ,
 
                         "Jeff Lee":"leejeff","Cheryl Huang":"yahua",
@@ -127,6 +129,7 @@ def getBacklog():
     r = requests.post(url,
                       data=payload,
                       headers=header).text
+    
     return json.loads(r)
 
 
