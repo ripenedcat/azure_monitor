@@ -12,7 +12,7 @@
   - AAD Auth
   - Processor
 
-![image](https://github.com/ripenedcat/azure_monitor/assets/43979954/3691efb6-91a6-4202-aa80-ccdf76823f7f)
+![image](https://github.com/ripenedcat/azure_monitor/assets/43979954/2b5d372d-0d88-4b74-bc9c-8ccc1597f8d7)
 
 
 ## Usage
