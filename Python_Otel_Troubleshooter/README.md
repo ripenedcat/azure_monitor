@@ -23,8 +23,8 @@ import troubleshooter
 ```
 3. Run `troubleshoot()` function below `configure_azure_monitor`
 ```
-configure_azure_monitor()
-troubleshooter.troubleshoot()
+configure_azure_monitor(credential=credential)
+troubleshooter.troubleshoot(credential)
 ```
 4. For checking Processor, implement `troubleshooter.check_processor(span)` as below
 ```python
