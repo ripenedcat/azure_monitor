@@ -3,14 +3,14 @@
 ## Features
 - Set to debug logging, which also enables debug SDK log.
 
-- Collect all OTEL and AppInsights related environment variables.
+- Collect all OTEL, Azure and AppInsights related environment variables.
 
 - Check below features
   - cloud_RoleName/Instance
   - Excluded Url
   - Sampling
-  - AAD Auth
   - Processor
+  - AAD Authentication
 
 ![image](https://github.com/ripenedcat/azure_monitor/assets/43979954/2b5d372d-0d88-4b74-bc9c-8ccc1597f8d7)
 
@@ -23,6 +23,8 @@ import troubleshooter
 ```
 3. Run `troubleshoot()` function below `configure_azure_monitor`
 ```
+import troubleshooter
+
 configure_azure_monitor(credential=credential)
 troubleshooter.troubleshoot(credential)
 ```
