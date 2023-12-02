@@ -1,6 +1,5 @@
-import logging
+import logging, subprocess
 from os import environ
-from urllib import parse
 
 from opentelemetry.semconv.resource import ResourceAttributes
 from opentelemetry.trace import get_tracer_provider
@@ -17,29 +16,6 @@ _INTEGER_MIN: int = Int32.minval
 logging.basicConfig(format="%(asctime)s:%(levelname)s:%(message)s", level=logging.DEBUG)
 logging.info(f"Logging level has been set to debug.")
 
-def check_cloud_rolename():
-    logging.info(f"Checking AppRoleName/AppRoleInstance.")
-    env_resources_items = environ.get(OTEL_RESOURCE_ATTRIBUTES)
-    env_resource_map = {}
-
-    if env_resources_items:
-        for item in env_resources_items.split(","):
-            try:
-                key, value = item.split("=", maxsplit=1)
-            except ValueError as exc:
-                logging.warning(
-                    "Invalid key value resource attribute pair %s: %s",
-                    item,
-                    exc,
-                )
-                continue
-            value_url_decoded = parse.unquote(value.strip())
-            env_resource_map[key.strip()] = value_url_decoded
-
-    service_name = environ.get(OTEL_SERVICE_NAME)
-    if service_name:
-        env_resource_map[SERVICE_NAME] = service_name
-    logging.info(f"As per the environment variable, the expected env_resource_map is {env_resource_map}")
 
 def get_cloud_rolename():
     tracer_provider = get_tracer_provider()
@@ -48,7 +24,7 @@ def get_cloud_rolename():
     map[ResourceAttributes.SERVICE_NAME] = resource.attributes.get(ResourceAttributes.SERVICE_NAME)
     map[ResourceAttributes.SERVICE_NAMESPACE] = resource.attributes.get(ResourceAttributes.SERVICE_NAMESPACE)
     map[ResourceAttributes.SERVICE_INSTANCE_ID] = resource.attributes.get(ResourceAttributes.SERVICE_INSTANCE_ID)
-    logging.info(f"The real env_resource_map is {map}")
+    logging.info(f"The env_resource_map at exporter side is {map}")
 
 def get_excluded_url():
     _root =  r"OTEL_PYTHON_{}"
@@ -62,10 +38,10 @@ def get_excluded_url():
     logging.info(f"Parsed exlucded url list is: {excluded_url_list}")
 
 def get_all_env():
-    logging.info(f"Listing all environment variables related to OTEL and APPLICATIONINSIGHTS.")
-    env_sub_key_list = ["APPLICATIONINSIGHTS","OTEL"]
+    logging.info(f"Listing all environment variables related to Azure, OTEL and ApplicationInsights.")
+    env_sub_key_list = ["applicationinsights","otel","azure"]
     for key, value in environ.items():
-        if any(sub_key in key for sub_key in env_sub_key_list):
+        if any(sub_key in key.lower() for sub_key in env_sub_key_list):
             logging.info("{0}: {1}".format(key, value))
 
 def check_azure_ad_auth(credential):
@@ -74,7 +50,7 @@ def check_azure_ad_auth(credential):
         return
     try:
         token = credential.get_token("https://monitor.azure.com//.default", enable_cae=False)
-        logging.info(f"Entra ID Auth is valid.")
+        logging.info(f"Entra ID Auth is valid. token = {token}")
     except Exception as e:
         logging.error(f"Entra ID Auth is invalid.")
         logging.error(str(e))
@@ -103,13 +79,23 @@ def check_processor(span = None):
                  f"operation_id = {operation_id}. This operation_id represents a sampling score of {sampling_score}, which is smaller than current sampling ratio: {environ.get("OTEL_TRACES_SAMPLER_ARG", "1.0")}, will be sampled and recorded.")
 
 
+def get_all_packages():
+    logging.info("Current Installed Packages using pip list:")
+    installed_packages = subprocess.run(['pip', 'list'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    logging.info(f"\n{installed_packages}")
+
+
 def troubleshoot(credential=None):
     logging.info(f"Starting Python Otel SDK troubleshooter.")
-    get_all_env()
-    check_cloud_rolename()
-    get_cloud_rolename()
-    get_excluded_url()
-    check_azure_ad_auth(credential)
+    try:
+        get_all_packages()
+        get_all_env()
+        get_cloud_rolename()
+        get_excluded_url()
+        check_azure_ad_auth(credential)
+    except Exception as e:
+        logging.error(f"The troubleshooter encountered an error.")
+        logging.error(str(e))
 
 
 
