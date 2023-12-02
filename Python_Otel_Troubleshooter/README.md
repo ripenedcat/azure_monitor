@@ -5,8 +5,10 @@
 
 - Collect all OTEL, Azure and AppInsights related environment variables.
 
+- Collect information for all installed packages.
+
 - Check below features
-  - cloud_RoleName/Instance
+  - Cloud_RoleName/Instance
   - Excluded Url
   - Sampling
   - Processor
@@ -21,14 +23,14 @@
 ``` python
 import troubleshooter
 ```
-3. Run `troubleshoot()` function below `configure_azure_monitor`
+3. Run `troubleshoot()` function below `configure_azure_monitor`. If you are using Azure AD Authentication, optionally pass the ClientSecretCrendential object to it. 
 ```
 import troubleshooter
 
-configure_azure_monitor(credential=credential)
+configure_azure_monitor(connection_string=AIConnectionString,credential=credential)
 troubleshooter.troubleshoot(credential)
 ```
-4. For checking Processor, implement `troubleshooter.check_processor(span)` as below
+4. For checking Processor issues, implement `troubleshooter.check_processor(span)` as below
 ```python
 class SpanEnrichingProcessor(SpanProcessor):
     def on_end(self, span):
