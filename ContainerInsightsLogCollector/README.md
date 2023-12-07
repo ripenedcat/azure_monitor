@@ -1,4 +1,4 @@
-# ContainerInsightsLogCollector
+# [Deprecated]ContainerInsightsLogCollector
 
 ## Introduction
 This script is designed to collect related logs from OMS Agent pod enabled with Container Insights.
