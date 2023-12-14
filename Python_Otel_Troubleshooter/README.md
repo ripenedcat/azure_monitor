@@ -18,8 +18,8 @@
 
 
 ## Usage
-1. Download troubleshooter.py and put it into your project directory
-2. Import this file
+1. Download `troubleshooter.py` and put it into your project directory
+2. Please import this file before calling `configure_azure_monitor`, as the import of this file itself sets the logging mode to debug. 
 ``` python
 import troubleshooter
 ```
@@ -30,7 +30,7 @@ import troubleshooter
 configure_azure_monitor(connection_string=AIConnectionString,credential=credential)
 troubleshooter.troubleshoot(credential)
 ```
-4. For checking Processor issues, implement `troubleshooter.check_processor(span)` as below
+4. For checking Processor issues, implement `troubleshooter.check_processor(span)` inside the `on_end()` function of your custom processor, as below
 ```python
 class SpanEnrichingProcessor(SpanProcessor):
     def on_end(self, span):
