@@ -75,7 +75,8 @@ def check_processor(span = None):
     trace_id = span.context.trace_id
     operation_id = "{:032x}".format(trace_id)
     sampling_score = _get_DJB2_sample_score(operation_id)
-    logging.info(f"Current Span: name = {span.name}, has below attributes: {span.attributes}. "
+    span_events = [event.name for event in span.events]
+    logging.info(f"Current Span: name = {span.name}, \n has below attributes: {span.attributes},\n  has below events: {span_events}. \n"
                  f"operation_id = {operation_id}. This operation_id represents a sampling score of {sampling_score}, which is smaller than current sampling ratio: {environ.get("OTEL_TRACES_SAMPLER_ARG", "1.0")}, will be sampled and recorded.")
 
 
